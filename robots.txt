@@ -1,0 +1,300 @@
+# robots.txt - Optimized for Google Search Console Issues
+# This file addresses: 404s, duplicate content, crawl budget, and indexing issues
+# 
+# Note: This works together with .htaccess for complete SEO optimization
+# The .htaccess file handles redirects, HTTPS enforcement, and URL normalization
+
+# Allow all legitimate search engines
+User-agent: *
+Allow: /
+
+# ============================================
+# BLOCK PROBLEMATIC PATHS (Prevents 404s, 5xx, Soft 404s)
+# ============================================
+
+# Administrative and system paths
+Disallow: /admin/
+Disallow: /administrator/
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /wp-content/plugins/
+Disallow: /wp-content/themes/
+Disallow: /private/
+Disallow: /secure/
+Disallow: /protected/
+Disallow: /internal/
+Disallow: /system/
+Disallow: /config/
+Disallow: /configuration/
+
+# Temporary and cache directories
+Disallow: /tmp/
+Disallow: /temp/
+Disallow: /cache/
+Disallow: /caches/
+Disallow: /backup/
+Disallow: /backups/
+Disallow: /old/
+Disallow: /oldsite/
+Disallow: /archive/
+Disallow: /archives/
+
+# Development and testing
+Disallow: /test/
+Disallow: /testing/
+Disallow: /tests/
+Disallow: /dev/
+Disallow: /development/
+Disallow: /staging/
+Disallow: /staging-site/
+Disallow: /demo/
+Disallow: /beta/
+Disallow: /alpha/
+
+# API and technical paths
+Disallow: /api/
+Disallow: /apis/
+Disallow: /_next/
+Disallow: /_nuxt/
+Disallow: /node_modules/
+Disallow: /vendor/
+Disallow: /includes/
+Disallow: /lib/
+Disallow: /library/
+Disallow: /scripts/
+Disallow: /assets/js/
+Disallow: /assets/css/
+
+# Version control and config files
+Disallow: /.git/
+Disallow: /.svn/
+Disallow: /.env
+Disallow: /.env.local
+Disallow: /.htaccess
+Disallow: /composer.json
+Disallow: /package.json
+Disallow: /yarn.lock
+Disallow: /package-lock.json
+
+# File extensions that shouldn't be crawled
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*.log$
+Disallow: /*.sql$
+Disallow: /*.bak$
+Disallow: /*.old$
+Disallow: /*.orig$
+Disallow: /*.tmp$
+
+# Error pages and redirects
+Disallow: /404
+Disallow: /404.html
+Disallow: /404.php
+Disallow: /error/
+Disallow: /errors/
+Disallow: /error-page/
+Disallow: /page-not-found/
+
+# ============================================
+# BLOCK ALL QUERY PARAMETERS (Prevents Duplicates)
+# ============================================
+# This aggressively blocks URLs with ANY query parameters to prevent duplicate content
+# Only allow clean URLs without parameters
+
+# Block ALL URLs with query parameters (most aggressive approach)
+Disallow: /*?*
+
+# If you need to allow specific pages with parameters, uncomment and customize:
+# Allow: /search?*
+# Allow: /filter?*
+
+# ============================================
+# BLOCK SPECIFIC DUPLICATE-CREATING PATTERNS
+# ============================================
+# (These are redundant if /*?* is used, but kept for reference)
+
+# Tracking and marketing parameters
+Disallow: /*?*utm_*
+Disallow: /*?*utm_source=*
+Disallow: /*?*utm_medium=*
+Disallow: /*?*utm_campaign=*
+Disallow: /*?*utm_term=*
+Disallow: /*?*utm_content=*
+Disallow: /*?*ref=*
+Disallow: /*?*source=*
+Disallow: /*?*fbclid=*
+Disallow: /*?*gclid=*
+Disallow: /*?*msclkid=*
+Disallow: /*?*twclid=*
+
+# Pagination and filtering (creates duplicates)
+Disallow: /*?*sort=*
+Disallow: /*?*order=*
+Disallow: /*?*filter=*
+Disallow: /*?*filters=*
+Disallow: /*?*page=*
+Disallow: /*?*p=*
+Disallow: /*?*offset=*
+Disallow: /*?*limit=*
+Disallow: /*?*per_page=*
+Disallow: /*?*start=*
+Disallow: /*?*end=*
+
+# Session and security parameters
+Disallow: /*?*session=*
+Disallow: /*?*sid=*
+Disallow: /*?*token=*
+Disallow: /*?*auth=*
+Disallow: /*?*key=*
+Disallow: /*?*hash=*
+
+# Language and locale parameters
+Disallow: /*?*lang=*
+Disallow: /*?*language=*
+Disallow: /*?*locale=*
+Disallow: /*?*l=*
+
+# Search and query parameters
+Disallow: /*?*q=*
+Disallow: /*?*query=*
+Disallow: /*?*search=*
+Disallow: /*?*s=*
+
+# Date and time parameters
+Disallow: /*?*date=*
+Disallow: /*?*time=*
+Disallow: /*?*year=*
+Disallow: /*?*month=*
+
+# View and display parameters
+Disallow: /*?*view=*
+Disallow: /*?*display=*
+Disallow: /*?*format=*
+Disallow: /*?*mode=*
+
+# ============================================
+# BLOCK PROBLEMATIC URL PATTERNS
+# ============================================
+
+# Block numeric-only paths (often 404s or soft 404s)
+# Note: robots.txt doesn't support regex, so block common numeric patterns manually
+# Add specific numeric paths that cause issues, e.g.:
+# Disallow: /123
+# Disallow: /1234
+# Disallow: /12345
+
+# Block paths with multiple slashes (malformed URLs)
+Disallow: /*//
+
+# Block paths ending with common error indicators
+Disallow: /*error
+Disallow: /*404
+Disallow: /*not-found
+Disallow: /*undefined
+Disallow: /*null
+
+# Block common problematic patterns
+Disallow: /*print
+Disallow: /*print=*
+Disallow: /*pdf
+Disallow: /*export
+Disallow: /*download
+
+# Allow important pages
+Allow: /index.html
+Allow: /index.php
+Allow: /sitemap.xml
+Allow: /sitemap_index.xml
+Allow: /robots.txt
+Allow: /app-ads.txt
+
+# ============================================
+# CRAWL DELAY (Prevents Server Overload - 5xx Errors)
+# ============================================
+# Increased crawl delay to prevent server errors
+# Adjust based on your server capacity
+Crawl-delay: 2
+
+# Sitemap location (update with your actual domain)
+Sitemap: https://yourdomain.com/sitemap.xml
+# If you have multiple sitemaps, add them here:
+# Sitemap: https://yourdomain.com/sitemap-pages.xml
+# Sitemap: https://yourdomain.com/sitemap-posts.xml
+# Sitemap: https://yourdomain.com/sitemap-products.xml
+
+# ============================================
+# AGGRESSIVE BOT RESTRICTIONS (Prevents Server Errors)
+# ============================================
+# Block or heavily restrict bots that cause server overload
+
+User-agent: AhrefsBot
+Disallow: /
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Disallow: /
+Crawl-delay: 10
+
+User-agent: DotBot
+Disallow: /
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /
+Crawl-delay: 10
+
+User-agent: BLEXBot
+Disallow: /
+Crawl-delay: 10
+
+User-agent: YandexBot
+Crawl-delay: 5
+
+User-agent: Baiduspider
+Crawl-delay: 5
+
+# ============================================
+# ALLOW MAJOR SEARCH ENGINES (Clean URLs Only)
+# ============================================
+# Google and Bing bots - allow clean URLs only (no query parameters)
+# This prevents indexing of duplicate content
+
+User-agent: Googlebot
+Allow: /
+Disallow: /*?*
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Disallow: /*?*
+Crawl-delay: 1
+
+User-agent: Googlebot-Image
+Allow: /
+Disallow: /*?*
+
+User-agent: Googlebot-Mobile
+Allow: /
+Disallow: /*?*
+
+User-agent: Googlebot-News
+Allow: /
+Disallow: /*?*
+
+User-agent: Googlebot-Video
+Allow: /
+Disallow: /*?*
+
+# ============================================
+# GOOGLE ADSENSE CRAWLERS (Required for AdSense)
+# ============================================
+# Mediapartners-Google is the primary AdSense crawler
+# It needs access to your content to serve relevant ads
+
+User-agent: Mediapartners-Google
+Allow: /
+Disallow: /*?*
+Crawl-delay: 1
+
+# Googlebot is also used by AdSense, already allowed above
+

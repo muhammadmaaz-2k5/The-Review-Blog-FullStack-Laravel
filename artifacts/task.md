@@ -1,0 +1,5 @@
+- [x] Acknowledge plan
+- [x] Update filesystems.php
+- [x] Fix Article.php image logic
+- [x] Remove onerror fallback in blade files
+- [x] Migrate storage to public/storage
