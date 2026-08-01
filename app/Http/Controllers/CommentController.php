@@ -181,5 +181,17 @@ class CommentController extends Controller
 
         return back()->with('success', 'Your reply has been posted successfully!');
     }
+
+    /**
+     * Generate and return a new CAPTCHA
+     */
+    public function refreshCaptcha()
+    {
+        $captcha = $this->generateCaptcha();
+        return response()->json([
+            'success' => true,
+            'question' => $captcha['question'],
+        ]);
+    }
 }
 

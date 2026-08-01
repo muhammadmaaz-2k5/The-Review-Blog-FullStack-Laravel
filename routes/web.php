@@ -282,6 +282,7 @@ Route::get('/articles', [ArticleController::class, 'index'])->name('articles.ind
 
 // Article actions (must come before slug route to avoid conflicts)
 Route::post('/articles/{article}/like', [App\Http\Controllers\ArticleLikeController::class, 'toggle'])->name('articles.like');
+Route::get('/comments/captcha', [CommentController::class, 'refreshCaptcha'])->name('comments.captcha');
 Route::post('/articles/{article}/comments', [CommentController::class, 'store'])->name('comments.store');
 Route::post('/articles/{article}/comments/{comment}/reply', [CommentController::class, 'reply'])->name('comments.reply');
 

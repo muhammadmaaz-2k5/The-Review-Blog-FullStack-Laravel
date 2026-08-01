@@ -372,21 +372,12 @@
                     <!-- Article Actions (Like & Bookmark Buttons) -->
                     <div
                         class="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-gray-200 dark:!border-border-secondary">
-                        <button id="likeButton"
-                            class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base {{ $isLiked ?? false ? 'bg-red-100 text-red-600 dark:!bg-red-900/20 dark:!text-red-400' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:!bg-bg-card-hover dark:!text-white dark:!hover:bg-bg-card' }}"
-                            data-article-slug="{{ $article->slug }}"
-                            data-liked="{{ $isLiked ?? false ? 'true' : 'false' }}">
-                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="{{ $isLiked ?? false ? 'currentColor' : 'none' }}"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                                </path>
-                            </svg>
-                            <span class="font-semibold" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                <span id="likesCount">{{ $article->likes()->count() }}</span> <span
-                                    class="hidden sm:inline">Like{{ $article->likes()->count() !== 1 ? 's' : '' }}</span>
-                            </span>
-                        </button>
+                        <div id="react-like-button-root"
+                             data-article-id="{{ $article->slug }}"
+                             data-is-liked="{{ $isLiked ?? false ? 'true' : 'false' }}"
+                             data-likes-count="{{ $article->likes()->count() }}"
+                             data-logged-in="{{ Auth::check() ? 'true' : 'false' }}">
+                        </div>
 
                         @auth
                             <button id="bookmarkButton"
@@ -666,314 +657,62 @@
 
                                 @if(session('error'))
                                     <div
-                                        class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:!bg-red-900/20 dark:!border-red-700 dark:!text-red-400">
-                                        {{ session('error') }}
-                                    </div>
-                                @endif
-
-                                <form action="{{ route('comments.store', $article) }}" method="POST">
-                                    @csrf
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                        <div>
-                                            <label for="name"
-                                                class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2"
-                                                style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                Name <span class="text-red-500">*</span>
-                                            </label>
-                                            <input type="text" name="name" id="comment-name"
-                                                value="{{ old('name', auth()->check() ? auth()->user()->name : '') }}" required
-                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                                                placeholder="Your name">
-                                            @error('name')
-                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                        <div>
-                                            <label for="email"
-                                                class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2"
-                                                style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                Email <span class="text-red-500">*</span>
-                                            </label>
-                                            <input type="email" name="email" id="comment-email"
-                                                value="{{ old('email', auth()->check() ? auth()->user()->email : '') }}"
-                                                required
-                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                                                placeholder="your@email.com">
-                                            @error('email')
-                                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label for="content"
-                                            class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2"
-                                            style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                            Comment <span class="text-red-500">*</span>
-                                        </label>
-                                        <textarea name="content" id="content" rows="5" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                                            placeholder="Write your comment here...">{{ old('content') }}</textarea>
-                                        @error('content')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label for="captcha_answer"
-                                            class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2"
-                                            style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                            CAPTCHA: {{ $captchaQuestion ?? '0 + 0' }} = ? <span class="text-red-500">*</span>
-                                        </label>
-                                        <input type="number" name="captcha_answer" id="captcha_answer" required
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                                            placeholder="Enter the answer">
-                                        @error('captcha_answer')
-                                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <button type="submit"
-                                        class="w-full sm:w-auto px-6 py-2.5 bg-accent hover:bg-accent-light text-white font-semibold rounded-lg transition-all hover:scale-105 hover:shadow-accent text-sm sm:text-base"
-                                        style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                        Post Comment
-                                    </button>
-                                </form>
-                            </div>
-
-                            <!-- Comments List -->
-                            <div id="commentsList" class="space-y-3">
-                                @if($article->comments->count() > 0)
-                                    @foreach($article->comments as $comment)
-                                        <div
-                                            class="bg-white dark:!bg-bg-card rounded-lg border border-gray-200 dark:!border-border-secondary p-3 sm:p-4">
-                                            <div class="flex items-start gap-2 sm:gap-4">
-                                                <!-- Avatar -->
-                                                <div class="flex-shrink-0">
-                                                    @if($comment->user && $comment->user->avatar)
-                                                        <img src="{{ $comment->user->avatar }}" alt="{{ $comment->user->name }}"
-                                                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover">
-                                                    @else
-                                                        <div
-                                                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-accent flex items-center justify-center text-white font-semibold text-xs sm:text-sm">
-                                                            {{ strtoupper(substr($comment->user ? $comment->user->name : $comment->name, 0, 1)) }}
-                                                        </div>
-                                                    @endif
-                                                </div>
-
-                                                <!-- Comment Content -->
-                                                <div class="flex-1">
-                                                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
-                                                        <h4 class="font-semibold text-gray-900 dark:!text-white text-xs sm:text-sm"
-                                                            style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                            {{ $comment->user ? $comment->user->name : $comment->name }}
-                                                        </h4>
-                                                        @if($comment->user && $comment->user->isAuthor())
-                                                            <span
-                                                                class="px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded text-xs dark:!bg-blue-900/20 dark:!text-blue-400"
-                                                                style="font-family: 'Poppins', sans-serif; font-weight: 500;">
-                                                                Author
-                                                            </span>
-                                                        @endif
-                                                        <span class="text-xs text-gray-500 dark:!text-text-secondary"
-                                                            style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                                            <span class="hidden sm:inline">•</span>
-                                                            {{ $comment->created_at->diffForHumans() }}
-                                                        </span>
-                                                    </div>
-                                                    <p class="text-gray-700 dark:!text-text-primary mb-2 whitespace-pre-line text-sm break-words"
-                                                        style="font-family: 'Poppins', sans-serif; font-weight: 400; line-height: 1.6;">
-                                                        {{ trim($comment->content) }}
-                                                    </p>
-
-                                                    <!-- Reply Button -->
-                                                    <button onclick="showReplyForm('{{ $comment->id }}')"
-                                                        class="text-sm text-accent hover:text-accent-light font-semibold transition-colors"
-                                                        style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                        Reply
-                                                    </button>
-
-                                                    <!-- Reply Form (Hidden by default) -->
-                                                    <div id="reply-form-{{ $comment->id }}"
-                                                        class="hidden mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200 dark:!border-border-secondary">
-                                                        <form action="{{ route('comments.reply', [$article, $comment]) }}"
-                                                            method="POST">
-                                                            @csrf
-
-                                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                                                <div>
-                                                                    <label for="reply-name-{{ $comment->id }}"
-                                                                        class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2"
-                                                                        style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                                        Name <span class="text-red-500">*</span>
-                                                                    </label>
-                                                                    <input type="text" name="name" id="reply-name-{{ $comment->id }}"
-                                                                        class="reply-name-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                                                                        value="{{ auth()->check() ? auth()->user()->name : '' }}"
-                                                                        required placeholder="Your name">
-                                                                </div>
-                                                                <div>
-                                                                    <label for="reply-email-{{ $comment->id }}"
-                                                                        class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2"
-                                                                        style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                                        Email <span class="text-red-500">*</span>
-                                                                    </label>
-                                                                    <input type="email" name="email" id="reply-email-{{ $comment->id }}"
-                                                                        class="reply-email-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                                                                        value="{{ auth()->check() ? auth()->user()->email : '' }}"
-                                                                        required placeholder="your@email.com">
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="mb-4">
-                                                                <textarea name="content" rows="3" required
-                                                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                                                                    placeholder="Write your reply..."></textarea>
-                                                            </div>
-
-                                                            <div class="mb-4">
-                                                                <label for="reply-captcha-{{ $comment->id }}"
-                                                                    class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2"
-                                                                    style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                                    CAPTCHA: {{ $captchaQuestion ?? '0 + 0' }} = ? <span
-                                                                        class="text-red-500">*</span>
-                                                                </label>
-                                                                <input type="number" name="captcha_answer"
-                                                                    id="reply-captcha-{{ $comment->id }}" required
-                                                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                                                                    placeholder="Enter the answer">
-                                                                @error('captcha_answer')
-                                                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                                                                @enderror
-                                                            </div>
-
-                                                            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                                                                <button type="submit"
-                                                                    class="w-full sm:w-auto px-4 py-2 bg-accent hover:bg-accent-light text-white font-semibold rounded-lg transition-all text-sm"
-                                                                    style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                                    Post Reply
-                                                                </button>
-                                                                <button type="button" onclick="hideReplyForm('{{ $comment->id }}')"
-                                                                    class="w-full sm:w-auto px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all text-sm dark:!bg-bg-card-hover dark:!text-white"
-                                                                    style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                                    Cancel
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-
-                                                    <!-- Replies -->
-                                                    @if($comment->replies->count() > 0)
-                                                        <div
-                                                            class="mt-4 sm:mt-6 ml-4 sm:ml-8 space-y-3 sm:space-y-4 border-l-2 border-gray-200 dark:!border-border-secondary pl-3 sm:pl-6">
-                                                            @foreach($comment->replies as $reply)
-                                                                <div class="flex items-start gap-2 sm:gap-4">
-                                                                    <div class="flex-shrink-0">
-                                                                        @if($reply->user && $reply->user->avatar)
-                                                                            <img src="{{ $reply->user->avatar }}" alt="{{ $reply->user->name }}"
-                                                                                class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover">
-                                                                        @else
-                                                                            <div
-                                                                                class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-accent flex items-center justify-center text-white font-semibold text-xs">
-                                                                                {{ strtoupper(substr($reply->user ? $reply->user->name : $reply->name, 0, 1)) }}
-                                                                            </div>
-                                                                        @endif
-                                                                    </div>
-                                                                    <div class="flex-1">
-                                                                        <div class="flex flex-wrap items-center gap-1.5 sm:gap-3 mb-1">
-                                                                            <h5 class="font-semibold text-gray-900 dark:!text-white text-xs sm:text-sm"
-                                                                                style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                                                {{ $reply->user ? $reply->user->name : $reply->name }}
-                                                                            </h5>
-                                                                            @if($reply->user && $reply->user->isAuthor())
-                                                                                <span
-                                                                                    class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs dark:!bg-blue-900/20 dark:!text-blue-400"
-                                                                                    style="font-family: 'Poppins', sans-serif; font-weight: 500;">
-                                                                                    Author
-                                                                                </span>
-                                                                            @endif
-                                                                        </div>
-                                                                        <p class="text-xs text-gray-500 dark:!text-text-secondary mb-2"
-                                                                            style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                                                            {{ $reply->created_at->format('M d, Y \a\t g:i A') }}
-                                                                        </p>
-                                                                        <p class="text-gray-700 dark:!text-text-primary text-sm whitespace-pre-line break-words"
-                                                                            style="font-family: 'Poppins', sans-serif; font-weight: 400; line-height: 1.6;">
-                                                                            {{ trim($reply->content) }}
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <div id="noCommentsMessage"
-                                        class="text-center py-12 bg-white dark:!bg-bg-card rounded-lg border border-gray-200 dark:!border-border-secondary">
-                                        <p class="text-gray-600 dark:!text-text-secondary"
-                                            style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                            No comments yet. Be the first to comment!
-                                        </p>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    @else
-                        <div class="mt-12 pt-8 border-t border-gray-200 dark:!border-border-secondary text-center">
-                            <p class="text-gray-600 dark:!text-text-secondary"
-                                style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                Comments are disabled for this article.
-                            </p>
-                        </div>
-                    @endif
+                    <div id="react-comments-root"
+                         data-article-id="{{ $article->slug }}"
+                         data-comments="{{ json_encode($article->comments->map(function($comment) {
+                             return [
+                                 'id' => $comment->id,
+                                 'name' => $comment->user ? $comment->user->name : $comment->name,
+                                 'content' => $comment->content,
+                                 'created_at' => $comment->created_at->format('M d, Y \a\t g:i A'),
+                                 'is_author' => $comment->user && $comment->user->isAuthor(),
+                                 'avatar' => $comment->user && $comment->user->avatar ? $comment->user->avatar : null,
+                                 'parent_id' => $comment->parent_id,
+                                 'replies' => $comment->replies->map(function($reply) {
+                                     return [
+                                         'id' => $reply->id,
+                                         'name' => $reply->user ? $reply->user->name : $reply->name,
+                                         'content' => $reply->content,
+                                         'created_at' => $reply->created_at->format('M d, Y \a\t g:i A'),
+                                         'is_author' => $reply->user && $reply->user->isAuthor(),
+                                         'avatar' => $reply->user && $reply->user->avatar ? $reply->user->avatar : null,
+                                         'parent_id' => $reply->parent_id
+                                     ];
+                                 })->values()
+                             ];
+                         })->values()) }}"
+                         data-captcha-question="{{ $captchaQuestion ?? '0 + 0' }}"
+                         data-allow-comments="{{ $article->allow_comments ? 'true' : 'false' }}"
+                         data-logged-in="{{ Auth::check() ? 'true' : 'false' }}"
+                         data-current-user="{{ Auth::check() ? json_encode(['name' => Auth::user()->name, 'email' => Auth::user()->email]) : 'null' }}">
+                    </div>
 
                 </div> <!-- End Content Column -->
 
                 <!-- Right Sidebar -->
                 <div class="w-full lg:w-80 xl:w-96 flex-shrink-0 space-y-8 mt-12 lg:mt-0">
 
-                    <!-- Table of Contents -->
-                    @php
-                        // Ensure headings is always available as an array
-                        if (!isset($headings) || !is_array($headings)) {
-                            $headings = [];
-                        }
-                    @endphp
-                    @if(count($headings) > 0)
-                        <div class="bg-white dark:!bg-bg-card rounded-2xl border border-gray-200 dark:!border-border-secondary overflow-hidden shadow-sm sticky top-32 transition-all duration-300 hover:shadow-md hidden lg:block"
-                            id="toc-container">
-                            <div
-                                class="p-6 border-b border-gray-100 dark:!border-border-primary bg-gray-50 dark:!bg-bg-card-hover">
-                                <h3 class="text-lg font-bold text-gray-900 dark:!text-white flex items-center gap-2 uppercase tracking-wider"
-                                    style="font-family: 'Poppins', sans-serif;">
-                                    <span class="w-1.5 h-6 bg-accent rounded-full"></span>
-                                    Table of Contents
-                                </h3>
-                            </div>
-                            <div class="p-6">
-                                <ul class="space-y-3">
-                                    @foreach($headings as $heading)
-                                        <li style="padding-left: {{ max(0, ($heading['level'] - 2) * 1.25) }}rem;">
-                                            <a href="#{{ Str::slug($heading['text']) }}"
-                                                onclick="scrollToHeading('{{ Str::slug($heading['text']) }}'); return false;"
-                                                class="toc-link text-sm font-medium text-gray-600 dark:text-text-secondary hover:text-accent dark:hover:text-accent transition-colors flex items-start gap-2 group">
-                                                <span
-                                                    class="opacity-0 group-hover:opacity-100 transition-opacity mt-1.5 w-1.5 h-1.5 rounded-full bg-accent flex-shrink-0"></span>
-                                                <span>{{ $heading['text'] }}</span>
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </div>
-                    @endif
-
-                    {{-- Hot celebrity sidebar ad component removed --}}
-
+@push('scripts')
+<script>
+    // Copy Link Function
+    function copyArticleLink() {
+        const btn = document.getElementById('copyLinkBtn');
+        const url = btn.dataset.url;
+        navigator.clipboard.writeText(url).then(() => {
+            const text = document.getElementById('copyLinkText');
+            const mobileText = document.getElementById('copyLinkTextMobile');
+            const original = text.textContent;
+            text.textContent = 'Copied!';
+            mobileText.textContent = 'Copied!';
+            setTimeout(() => {
+                text.textContent = original;
+                mobileText.textContent = 'Copy';
+            }, 2000);
+        });
+    }
+</script>
+@endpush
+                    
                     <!-- Search Widget -->
                     <div
                         class="bg-gray-50 dark:!bg-bg-card rounded-2xl p-6 border border-gray-200 dark:!border-border-secondary shadow-sm">
@@ -1256,390 +995,6 @@
                 </div>
             </div>
         </div>
-    @endif
-
-    <script>
-        // LocalStorage keys
-        const COMMENT_NAME_KEY = 'comment_user_name';
-        const COMMENT_EMAIL_KEY = 'comment_user_email';
-
-        // Load saved name and email from localStorage
-        document.addEventListener('DOMContentLoaded', function () {
-            const savedName = localStorage.getItem(COMMENT_NAME_KEY);
-            const savedEmail = localStorage.getItem(COMMENT_EMAIL_KEY);
-
-            // Fill main comment form
-            const nameInput = document.getElementById('comment-name');
-            const emailInput = document.getElementById('comment-email');
-
-            if (nameInput && savedName) {
-                nameInput.value = savedName;
-            }
-            if (emailInput && savedEmail) {
-                emailInput.value = savedEmail;
-            }
-
-            // Fill reply forms when they're shown
-            const replyNameInputs = document.querySelectorAll('.reply-name-input');
-            const replyEmailInputs = document.querySelectorAll('.reply-email-input');
-
-            replyNameInputs.forEach(input => {
-                if (savedName) {
-                    input.value = savedName;
-                }
-            });
-
-            replyEmailInputs.forEach(input => {
-                if (savedEmail) {
-                    input.value = savedEmail;
-                }
-            });
-        });
-
-        // AJAX Comment Submission
-        document.addEventListener('DOMContentLoaded', function () {
-            const commentForm = document.querySelector('form[action*="comments.store"]');
-            if (commentForm) {
-                commentForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    const formData = new FormData(this);
-                    const submitButton = this.querySelector('button[type="submit"]');
-                    const originalText = submitButton.textContent;
-                    submitButton.disabled = true;
-                    submitButton.textContent = 'Posting...';
-
-                    // Save to localStorage
-                    const nameInput = document.getElementById('comment-name');
-                    const emailInput = document.getElementById('comment-email');
-
-                    if (nameInput && nameInput.value.trim()) {
-                        localStorage.setItem(COMMENT_NAME_KEY, nameInput.value.trim());
-                    }
-                    if (emailInput && emailInput.value.trim()) {
-                        localStorage.setItem(COMMENT_EMAIL_KEY, emailInput.value.trim());
-                    }
-
-                    fetch(this.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
-                        }
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.json().then(err => Promise.reject(err));
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            submitButton.disabled = false;
-                            submitButton.textContent = originalText;
-
-                            if (data.success) {
-                                // Show success message
-                                showMessage(data.message, 'success');
-
-                                // Clear form
-                                this.reset();
-
-                                // Re-fill with saved values
-                                if (nameInput) nameInput.value = localStorage.getItem(COMMENT_NAME_KEY) || '';
-                                if (emailInput) emailInput.value = localStorage.getItem(COMMENT_EMAIL_KEY) || '';
-
-                                // If not pending, add comment to list
-                                if (!data.pending && data.comment) {
-                                    addCommentToPage(data.comment);
-                                    updateCommentCount();
-                                    document.getElementById('noCommentsMessage')?.remove();
-                                }
-                            }
-                        })
-                        .catch(error => {
-                            submitButton.disabled = false;
-                            submitButton.textContent = originalText;
-
-                            // Handle validation errors (including CAPTCHA)
-                            if (error.errors && error.errors.captcha_answer) {
-                                showMessage(error.errors.captcha_answer[0] || 'CAPTCHA answer is incorrect.', 'error');
-                            } else {
-                                showMessage(error.message || 'An error occurred. Please try again.', 'error');
-                            }
-                            console.error('Error:', error);
-                        });
-                });
-            }
-
-            // AJAX Reply Submission
-            document.addEventListener('submit', function (e) {
-                if (e.target.matches('form[action*="comments.reply"]')) {
-                    e.preventDefault();
-
-                    const form = e.target;
-                    const formData = new FormData(form);
-                    const submitButton = form.querySelector('button[type="submit"]');
-                    const originalText = submitButton.textContent;
-                    // Extract parent comment ID from form action: /articles/{article}/comments/{commentId}/reply
-                    const actionParts = form.action.split('/');
-                    const parentId = actionParts[actionParts.length - 2]; // Second to last part
-
-                    submitButton.disabled = true;
-                    submitButton.textContent = 'Posting...';
-
-                    // Save to localStorage
-                    const nameInput = form.querySelector('.reply-name-input');
-                    const emailInput = form.querySelector('.reply-email-input');
-
-                    if (nameInput && nameInput.value.trim()) {
-                        localStorage.setItem(COMMENT_NAME_KEY, nameInput.value.trim());
-                    }
-                    if (emailInput && emailInput.value.trim()) {
-                        localStorage.setItem(COMMENT_EMAIL_KEY, emailInput.value.trim());
-                    }
-
-                    fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
-                        }
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.json().then(err => Promise.reject(err));
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            submitButton.disabled = false;
-                            submitButton.textContent = originalText;
-
-                            if (data.success) {
-                                showMessage(data.message, 'success');
-
-                                // Hide reply form
-                                const replyFormDiv = form.closest('[id^="reply-form-"]');
-                                if (replyFormDiv) {
-                                    const commentId = replyFormDiv.id.replace('reply-form-', '');
-                                    hideReplyForm(commentId);
-                                }
-
-                                // If not pending, add reply to page
-                                if (!data.pending && data.reply) {
-                                    addReplyToPage(data.reply, parentId);
-                                    updateCommentCount();
-                                }
-                            } else {
-                                showMessage(data.message || 'An error occurred. Please try again.', 'error');
-                            }
-                        })
-                        .catch(error => {
-                            submitButton.disabled = false;
-                            submitButton.textContent = originalText;
-
-                            // Handle validation errors (including CAPTCHA)
-                            if (error.errors && error.errors.captcha_answer) {
-                                showMessage(error.errors.captcha_answer[0] || 'CAPTCHA answer is incorrect.', 'error');
-                            } else {
-                                showMessage(error.message || 'An error occurred. Please try again.', 'error');
-                            }
-                            console.error('Error:', error);
-                        });
-                }
-            });
-        });
-
-        // Helper functions
-        function showMessage(message, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `mb-4 p-4 rounded-lg ${type === 'success' ? 'bg-green-100 border border-green-400 text-green-700 dark:!bg-green-900/20 dark:!border-green-700 dark:!text-green-400' : 'bg-red-100 border border-red-400 text-red-700 dark:!bg-red-900/20 dark:!border-red-700 dark:!text-red-400'}`;
-            messageDiv.textContent = message;
-            messageDiv.style.fontFamily = "'Poppins', sans-serif";
-
-            const commentForm = document.querySelector('.bg-white.dark\\!bg-bg-card.rounded-lg.border');
-            if (commentForm) {
-                const existingMessage = commentForm.querySelector('.mb-4.p-4.rounded-lg');
-                if (existingMessage) {
-                    existingMessage.remove();
-                }
-                commentForm.insertBefore(messageDiv, commentForm.querySelector('form'));
-
-                setTimeout(() => {
-                    messageDiv.remove();
-                }, 5000);
-            }
-        }
-
-        function addCommentToPage(comment) {
-            const commentsList = document.getElementById('commentsList');
-            if (!commentsList) return;
-
-            const commentHtml = `
-            <div class="bg-white dark:!bg-bg-card rounded-lg border border-gray-200 dark:!border-border-secondary p-4">
-                <div class="flex items-start gap-3">
-                    <div class="flex-shrink-0">
-                        ${comment.avatar ?
-                    `<img src="${comment.avatar}" alt="${comment.name}" class="w-10 h-10 rounded-full object-cover">` :
-                    `<div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-white font-semibold text-sm">${comment.name.charAt(0).toUpperCase()}</div>`
-                }
-                                </div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-1">
-                            <h4 class="font-semibold text-gray-900 dark:!text-white text-sm" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                ${comment.name}
-                                    </h4>
-                            ${comment.is_author ? '<span class="px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded text-xs dark:!bg-blue-900/20 dark:!text-blue-400" style="font-family: \'Poppins\', sans-serif; font-weight: 500;">Author</span>' : ''}
-                            <span class="text-xs text-gray-500 dark:!text-text-secondary" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                • ${comment.created_at}
-                            </span>
-                        </div>
-                        <p class="text-gray-700 dark:!text-text-primary mb-2 whitespace-pre-line text-sm break-words" style="font-family: 'Poppins', sans-serif; font-weight: 400; line-height: 1.6;">
-                            ${comment.content.trim()}
-                        </p>
-                        <button onclick="showReplyForm(${comment.id})" class="text-sm text-accent hover:text-accent-light font-semibold transition-colors" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                            Reply
-                        </button>
-                        <div id="reply-form-${comment.id}" class="hidden mt-4 pt-4 border-t border-gray-200 dark:!border-border-secondary">
-                            ${getReplyFormHtml(comment.id)}
-                                </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-            commentsList.insertAdjacentHTML('afterbegin', commentHtml);
-        }
-
-        function addReplyToPage(reply, parentId) {
-            // Find parent comment - could be a main comment or a nested reply
-            let parentElement = document.querySelector(`[data-comment-id="${parentId}"]`);
-
-            // If not found as main comment, try to find in replies
-            if (!parentElement) {
-                const allReplies = document.querySelectorAll('.replies-container > div');
-                for (let replyDiv of allReplies) {
-                    if (replyDiv.getAttribute('data-reply-id') === parentId.toString()) {
-                        parentElement = replyDiv;
-                        break;
-                    }
-                }
-            }
-
-            if (!parentElement) {
-                // Find by looking for the reply form that was just submitted
-                const replyForm = document.querySelector(`form[action*="/comments/${parentId}/reply"]`);
-                if (replyForm) {
-                    parentElement = replyForm.closest('[data-comment-id]') || replyForm.closest('.bg-white');
-                }
-            }
-
-            if (!parentElement) return;
-
-            let repliesContainer = parentElement.querySelector('.replies-container');
-            if (!repliesContainer) {
-                repliesContainer = document.createElement('div');
-                repliesContainer.className = 'mt-3 ml-6 space-y-2 border-l-2 border-gray-200 dark:!border-border-secondary pl-4 replies-container';
-                const commentContent = parentElement.querySelector('.flex-1');
-                if (commentContent) {
-                    commentContent.appendChild(repliesContainer);
-                }
-            }
-
-            const replyHtml = `
-            <div class="flex items-start gap-3">
-                <div class="flex-shrink-0">
-                    ${reply.avatar ?
-                    `<img src="${reply.avatar}" alt="${reply.name}" class="w-8 h-8 rounded-full object-cover">` :
-                    `<div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white font-semibold text-xs">${reply.name.charAt(0).toUpperCase()}</div>`
-                }
-                </div>
-                <div class="flex-1">
-                    <div class="flex items-center gap-2 mb-1">
-                        <h5 class="font-semibold text-gray-900 dark:!text-white text-sm" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                            ${reply.name}
-                        </h5>
-                        ${reply.is_author ? '<span class="px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded text-xs dark:!bg-blue-900/20 dark:!text-blue-400" style="font-family: \'Poppins\', sans-serif; font-weight: 500;">Author</span>' : ''}
-                                <span class="text-xs text-gray-500 dark:!text-text-secondary" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                            • ${reply.created_at}
-                                </span>
-                    </div>
-                    <p class="text-gray-700 dark:!text-text-primary text-sm whitespace-pre-line break-words mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 400; line-height: 1.6;">
-                        ${reply.content.trim()}
-                    </p>
-                </div>
-            </div>
-        `;
-
-            repliesContainer.insertAdjacentHTML('beforeend', replyHtml);
-        }
-
-        function getReplyFormHtml(commentId) {
-            const savedName = localStorage.getItem(COMMENT_NAME_KEY) || '';
-            const savedEmail = localStorage.getItem(COMMENT_EMAIL_KEY) || '';
-            const articleId = '{{ $article->id }}';
-
-            return `
-            <form action="/articles/${articleId}/comments/${commentId}/reply" method="POST">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                            Name <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" name="name" class="reply-name-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white" value="${savedName}" required placeholder="Your name">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                            Email <span class="text-red-500">*</span>
-                        </label>
-                        <input type="email" name="email" class="reply-email-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white" value="${savedEmail}" required placeholder="your@email.com">
-        </div>
-    </div>
-                <div class="mb-4">
-                    <textarea name="content" rows="3" required
-                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                              placeholder="Write your reply..."></textarea>
-                </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                        CAPTCHA: {{ $captchaQuestion ?? '0 + 0' }} = ? <span class="text-red-500">*</span>
-                    </label>
-                    <input type="number" name="captcha_answer" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
-                           placeholder="Enter the answer">
-                </div>
-                <div class="mb-4">
-                    <textarea name="content" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white" placeholder="Write your reply..."></textarea>
-                </div>
-                <div class="flex gap-3">
-                    <button type="submit" class="px-4 py-2 bg-accent hover:bg-accent-light text-white font-semibold rounded-lg transition-all text-sm" style="font-family: 'Poppins', sans-serif; font-weight: 600;">Post Reply</button>
-                    <button type="button" onclick="hideReplyForm(${commentId})" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all text-sm dark:!bg-bg-card-hover dark:!text-white" style="font-family: 'Poppins', sans-serif; font-weight: 600;">Cancel</button>
-                </div>
-            </form>
-        `;
-        }
-
-        function updateCommentCount() {
-            const commentsList = document.getElementById('commentsList');
-            const comments = commentsList.querySelectorAll('.bg-white.dark\\!bg-bg-card.rounded-lg');
-            const count = comments.length;
-            const countElement = document.querySelector('h2');
-            if (countElement && countElement.textContent.includes('Comments')) {
-                countElement.textContent = `Comments (${count})`;
-            }
-        }
-
-        function showReplyForm(commentId) {
-            const replyForm = document.getElementById('reply-form-' + commentId);
-            replyForm.classList.remove('hidden');
-
-            // Load saved name and email into reply form
-            const savedName = localStorage.getItem(COMMENT_NAME_KEY);
-            const savedEmail = localStorage.getItem(COMMENT_EMAIL_KEY);
-
             const nameInput = document.getElementById('reply-name-' + commentId);
             const emailInput = document.getElementById('reply-email-' + commentId);
 

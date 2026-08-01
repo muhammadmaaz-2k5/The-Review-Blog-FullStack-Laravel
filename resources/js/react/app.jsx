@@ -71,8 +71,10 @@ function ClerkSync() {
 }
 
 import FollowButton from './components/FollowButton';
+import LikeButton from './components/LikeButton';
+import Comments from './components/Comments';
 
-function ClerkApp({ signInMount, signUpMount, followButtonMount }) {
+function ClerkApp({ signInMount, signUpMount, followButtonMount, likeButtonMount, commentsMount }) {
     // If we are on the login or register page, we shouldn't mount the component 
     // if the user is already signed in and synced with Laravel, because they would be redirected.
     // However, if they are NOT synced, ClerkSync will handle the sync and redirect.
@@ -105,6 +107,26 @@ function ClerkApp({ signInMount, signUpMount, followButtonMount }) {
                 />,
                 followButtonMount
             )}
+            {likeButtonMount && createPortal(
+                <LikeButton 
+                    articleId={likeButtonMount.dataset.articleId}
+                    initialIsLiked={likeButtonMount.dataset.isLiked}
+                    initialLikesCount={likeButtonMount.dataset.likesCount}
+                    isLoggedIn={likeButtonMount.dataset.loggedIn === 'true'}
+                />,
+                likeButtonMount
+            )}
+            {commentsMount && createPortal(
+                <Comments 
+                    articleId={commentsMount.dataset.articleId}
+                    initialComments={JSON.parse(commentsMount.dataset.comments || '[]')}
+                    initialCaptchaQuestion={commentsMount.dataset.captchaQuestion}
+                    allowComments={commentsMount.dataset.allowComments === 'true'}
+                    isLoggedIn={commentsMount.dataset.loggedIn === 'true'}
+                    currentUser={JSON.parse(commentsMount.dataset.currentUser || 'null')}
+                />,
+                commentsMount
+            )}
         </ClerkProvider>
     );
 }
@@ -113,6 +135,8 @@ const mountReactApp = () => {
     const signInMount = document.getElementById('react-clerk-sign-in');
     const signUpMount = document.getElementById('react-clerk-sign-up');
     const followButtonMount = document.getElementById('react-follow-button-root');
+    const likeButtonMount = document.getElementById('react-like-button-root');
+    const commentsMount = document.getElementById('react-comments-root');
 
     let appRoot = document.getElementById('clerk-react-app-root');
     if (!appRoot) {
@@ -122,7 +146,15 @@ const mountReactApp = () => {
     }
 
     const root = createRoot(appRoot);
-    root.render(<ClerkApp signInMount={signInMount} signUpMount={signUpMount} followButtonMount={followButtonMount} />);
+    root.render(
+        <ClerkApp 
+            signInMount={signInMount} 
+            signUpMount={signUpMount} 
+            followButtonMount={followButtonMount} 
+            likeButtonMount={likeButtonMount}
+            commentsMount={commentsMount}
+        />
+    );
 };
 
 if (document.readyState === 'loading') {
