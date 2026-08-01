@@ -1,19 +1,18 @@
-@extends('layouts.app')
 
-@php
+
+<?php
     $isHotCelebrity = $article->category && $article->category->slug === 'hot-celebrity';
-@endphp
+?>
 
-@push('head')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    {{--
-    <link rel="amphtml" href="{{ route('amp.article', $article->slug) }}"> --}}
-    {{-- Ads removed - global popunder component removed --}}
-@endpush
+<?php $__env->startPush('head'); ?>
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+    
+    
+<?php $__env->stopPush(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <!-- Table of Contents Extraction -->
-    @php
+    <?php
         $headings = [];
         // Decode HTML entities (important if content comes from an editor like TinyMCE)
         $decodedContent = html_entity_decode($article->rendered_content, ENT_QUOTES, 'UTF-8');
@@ -27,34 +26,35 @@
                 ];
             }
         }
-    @endphp
+    ?>
 
     <!-- Reading Progress Bar -->
     <div id="readingProgress"
         class="fixed top-0 left-0 w-0 h-1 z-[10000] bg-gradient-to-r from-accent to-purple-600 transition-all duration-150 ease-out shadow-[0_0_10px_rgba(59,130,246,0.5)]">
     </div>
 
-    @if(request()->has('destination'))
-        @php
+    <?php if(request()->has('destination')): ?>
+        <?php
             \Illuminate\Support\Facades\Log::info('Download Overlay Debug:', [
                 'destination' => request('destination'),
                 'source' => request('source'),
                 'full_url' => request()->fullUrl(),
                 'ip' => request()->ip()
             ]);
-        @endphp
-    @endif
+        ?>
+    <?php endif; ?>
 
-    @if(request()->has('destination') && request('source') !== 'nazaarabox')
+    <?php if(request()->has('destination') && request('source') !== 'nazaarabox'): ?>
         <div class="fixed top-0 left-0 w-full bg-red-600 text-white p-4 z-[10000] text-center font-bold">
             DEBUG: Download overlay blocked. Invalid source parameter.<br>
             Expected: source=nazaarabox<br>
-            Got: source={{ request('source') ?? 'null' }}
+            Got: source=<?php echo e(request('source') ?? 'null'); ?>
+
         </div>
         <script>console.warn('Download overlay blocked: Invalid source parameter. Expected: nazaarabox, Got: ' + new URLSearchParams(window.location.search).get('source'));</script>
-    @endif
+    <?php endif; ?>
 
-    @if(request()->has('destination') && request('source') === 'nazaarabox')
+    <?php if(request()->has('destination') && request('source') === 'nazaarabox'): ?>
         <div class="fixed inset-0 z-[9999] bg-white dark:bg-gray-900 flex flex-col items-center justify-center transition-opacity duration-500"
             id="redirect-overlay">
             <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-accent mb-4"></div>
@@ -72,7 +72,7 @@
                     const cache = currentUrl.searchParams.get('cache');
 
                     // Construct home URL with params
-                    const homeUrl = new URL("{{ route('home') }}");
+                    const homeUrl = new URL("<?php echo e(route('home')); ?>");
                     homeUrl.searchParams.set('destination', destination);
                     homeUrl.searchParams.set('source', source);
                     if (cache) homeUrl.searchParams.set('cache', cache);
@@ -81,43 +81,44 @@
                 }, 1500); // 1.5s delay for better UX
             });
         </script>
-    @endif
+    <?php endif; ?>
 
 
-    {{-- Article data for tracking last visited --}}
-    <div data-article-data='{"id":{{ $article->id }},"title":"{{ addslashes($article->title) }}","slug":"{{ $article->slug }}","image":"{{ $article->featured_image }}","url":"{{ route('articles.show', $article->slug) }}"}'
+    
+    <div data-article-data='{"id":<?php echo e($article->id); ?>,"title":"<?php echo e(addslashes($article->title)); ?>","slug":"<?php echo e($article->slug); ?>","image":"<?php echo e($article->featured_image); ?>","url":"<?php echo e(route('articles.show', $article->slug)); ?>"}'
         class="hidden"></div>
 
-    <article data-viewable-type="{{ addslashes(get_class($article)) }}" data-viewable-id="{{ $article->id }}"
+    <article data-viewable-type="<?php echo e(addslashes(get_class($article))); ?>" data-viewable-id="<?php echo e($article->id); ?>"
         class="min-h-screen bg-white dark:!bg-bg-primary pb-16">
         <!-- HERO SECTION -->
         <div class="relative w-full h-[70vh] min-h-[600px] mb-16 group overflow-hidden">
             <div class="absolute inset-0 w-full h-full">
-                @if($article->featured_image)
-                    <img src="{{ $article->featured_image_url }}" alt="{{ $article->featured_image_alt ?: $article->title }}"
+                <?php if($article->featured_image): ?>
+                    <img src="<?php echo e($article->featured_image_url); ?>" alt="<?php echo e($article->featured_image_alt ?: $article->title); ?>"
                         class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
                     <div class="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/80 to-transparent"></div>
                     <div class="absolute inset-0 bg-gradient-to-b from-[#0D0D0D]/60 via-transparent to-transparent"></div>
-                @else
+                <?php else: ?>
                     <div class="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800"></div>
                     <div
                         class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20">
                     </div>
-                @endif
+                <?php endif; ?>
             </div>
 
             <div
                 class="absolute bottom-0 left-0 right-0 p-6 md:p-12 lg:p-20 max-w-[1440px] mx-auto z-10 flex flex-col justify-end h-full pb-16">
                 <!-- Breadcrumbs / Category -->
                 <div class="flex items-center gap-3 mb-6 text-xs font-bold tracking-widest uppercase text-gray-300">
-                    <a href="{{ route('home') }}" class="hover:text-accent transition-colors">Home</a>
+                    <a href="<?php echo e(route('home')); ?>" class="hover:text-accent transition-colors">Home</a>
                     <span class="text-accent">/</span>
-                    @if($article->category)
-                        <a href="{{ route('categories.show', $article->category->slug) }}"
+                    <?php if($article->category): ?>
+                        <a href="<?php echo e(route('categories.show', $article->category->slug)); ?>"
                             class="hover:text-accent transition-colors">
-                            {{ $article->category->name }}
+                            <?php echo e($article->category->name); ?>
+
                         </a>
-                    @endif
+                    <?php endif; ?>
                     <span class="text-accent">/</span>
                     <span class="text-white border-b-2 border-accent pb-0.5">Article</span>
                 </div>
@@ -125,23 +126,25 @@
                 <!-- Title -->
                 <h1 class="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-8 leading-[1.1] max-w-5xl uppercase tracking-tighter drop-shadow-lg"
                     style="font-family: 'Poppins', sans-serif;">
-                    {{ $article->title }}
+                    <?php echo e($article->title); ?>
+
                 </h1>
 
                 <!-- Author & Meta -->
                 <div class="flex flex-wrap items-center gap-6 md:gap-8 text-white">
-                    @if($article->author)
+                    <?php if($article->author): ?>
                         <div class="flex items-center gap-4 group cursor-pointer">
                             <div class="relative">
-                                @if($article->author->avatar)
-                                    <img src="{{ $article->author->avatar }}"
+                                <?php if($article->author->avatar): ?>
+                                    <img src="<?php echo e($article->author->avatar); ?>"
                                         class="w-14 h-14 rounded-full border-2 border-accent object-cover group-hover:scale-110 transition-transform">
-                                @else
+                                <?php else: ?>
                                     <div
                                         class="w-14 h-14 rounded-full bg-accent flex items-center justify-center text-white font-bold border-2 border-white/20 text-xl group-hover:scale-110 transition-transform">
-                                        {{ substr($article->author->name, 0, 1) }}
+                                        <?php echo e(substr($article->author->name, 0, 1)); ?>
+
                                     </div>
-                                @endif
+                                <?php endif; ?>
                                 <div class="absolute -bottom-1 -right-1 bg-white text-accent rounded-full p-0.5 shadow-sm">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
@@ -153,10 +156,10 @@
                             <div class="flex flex-col">
                                 <span class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-0.5">Written By</span>
                                 <span
-                                    class="font-bold text-lg group-hover:text-accent transition-colors">{{ $article->author->name }}</span>
+                                    class="font-bold text-lg group-hover:text-accent transition-colors"><?php echo e($article->author->name); ?></span>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                     <div class="hidden md:block w-px h-10 bg-white/20"></div>
 
@@ -164,28 +167,28 @@
                         <div class="flex flex-col">
                             <span class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-0.5">Published</span>
                             <span
-                                class="font-bold text-lg">{{ $article->published_at?->format('M d, Y') ?? 'Draft' }}</span>
+                                class="font-bold text-lg"><?php echo e($article->published_at?->format('M d, Y') ?? 'Draft'); ?></span>
                         </div>
 
                         <div class="w-px h-10 bg-white/20"></div>
 
                         <div class="flex flex-col">
                             <span class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-0.5">Read Time</span>
-                            <span class="font-bold text-lg">{{ $article->reading_time }} Min</span>
+                            <span class="font-bold text-lg"><?php echo e($article->reading_time); ?> Min</span>
                         </div>
 
                         <div class="w-px h-10 bg-white/20"></div>
 
                         <div class="flex flex-col">
                             <span class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-0.5">Views</span>
-                            <span class="font-bold text-lg">{{ number_format($article->views) }}</span>
+                            <span class="font-bold text-lg"><?php echo e(number_format($article->views)); ?></span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- Hot celebrity banner ad component removed --}}
+        
 
         
         <!-- MAIN CONTENT LAYOUT -->
@@ -210,7 +213,7 @@
                         <!-- Share Icons -->
                         <div class="w-12 h-[1px] bg-gray-200 dark:!bg-border-secondary mx-auto"></div>
 
-                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('articles.show', $article->slug)) }}"
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo e(urlencode(route('articles.show', $article->slug))); ?>"
                             target="_blank"
                             class="w-12 h-12 rounded-full bg-white dark:!bg-bg-card border border-gray-200 dark:!border-border-secondary flex items-center justify-center text-gray-500 hover:text-[#1877F2] hover:border-[#1877F2] transition-all shadow-sm">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -219,7 +222,7 @@
                             </svg>
                         </a>
 
-                        <a href="https://twitter.com/intent/tweet?url={{ urlencode(route('articles.show', $article->slug)) }}"
+                        <a href="https://twitter.com/intent/tweet?url=<?php echo e(urlencode(route('articles.show', $article->slug))); ?>"
                             target="_blank"
                             class="w-12 h-12 rounded-full bg-white dark:!bg-bg-card border border-gray-200 dark:!border-border-secondary flex items-center justify-center text-gray-500 hover:text-[#1DA1F2] hover:border-[#1DA1F2] transition-all shadow-sm">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -239,68 +242,73 @@
                             [&>blockquote]:border-l-4 [&>blockquote]:border-accent [&>blockquote]:bg-gray-50 [&>blockquote]:dark:bg-bg-card [&>blockquote]:py-2 [&>blockquote]:px-4 [&>blockquote]:italic [&>blockquote]:rounded-r-lg"
                         style="font-family: 'Poppins', sans-serif;">
 
-                        @if($article->short_video_id)
+                        <?php if($article->short_video_id): ?>
                             <div class="flex justify-center my-8">
                                 <div
                                     class="relative w-full max-w-[315px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/10">
                                     <iframe width="315" height="560"
-                                        src="https://www.youtube.com/embed/{{ $article->short_video_id }}"
+                                        src="https://www.youtube.com/embed/<?php echo e($article->short_video_id); ?>"
                                         title="YouTube video player" frameborder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                         allowfullscreen class="absolute inset-0 w-full h-full">
                                     </iframe>
                                 </div>
                             </div>
-                        @endif
+                        <?php endif; ?>
 
                         <div
                             class="article-content space-y-6 [&_iframe]:w-full [&_iframe]:max-w-4xl [&_iframe]:aspect-video [&_iframe]:mx-auto [&_iframe]:rounded-xl [&_iframe]:shadow-lg [&_iframe]:my-6">
-                            {!! $article->rendered_content !!}
+                            <?php echo $article->rendered_content; ?>
+
                         </div>
                     </div>
 
                     <!-- Article Tags -->
-                    @if($article->tags->count() > 0)
+                    <?php if($article->tags->count() > 0): ?>
                         <div class="flex flex-wrap gap-2 mb-8">
-                            @foreach($article->tags as $tag)
-                                <a href="{{ route('tags.show', $tag->slug) }}"
+                            <?php $__currentLoopData = $article->tags; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <a href="<?php echo e(route('tags.show', $tag->slug)); ?>"
                                     class="px-3 py-1 bg-gray-100 dark:!bg-bg-card-hover text-gray-600 dark:!text-text-secondary rounded-full text-sm font-medium hover:bg-accent hover:text-white transition-colors"
                                     style="font-family: 'Poppins', sans-serif;">
-                                    #{{ $tag->name }}
+                                    #<?php echo e($tag->name); ?>
+
                                 </a>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Author Bio -->
-                    @if($article->author)
+                    <?php if($article->author): ?>
                         <div
                             class="flex flex-col sm:flex-row items-center sm:items-start gap-4 p-6 bg-gray-50 dark:!bg-bg-card rounded-xl border border-gray-100 dark:!border-border-secondary mb-8 text-center sm:text-left">
                             <div class="flex-shrink-0">
-                                <a href="{{ route('profile.show', $article->author->username ?? $article->author->id) }}">
-                                    @if($article->author->avatar)
-                                        <img src="{{ $article->author->avatar }}" alt="{{ $article->author->name }}"
+                                <a href="<?php echo e(route('profile.show', $article->author->username ?? $article->author->id)); ?>">
+                                    <?php if($article->author->avatar): ?>
+                                        <img src="<?php echo e($article->author->avatar); ?>" alt="<?php echo e($article->author->name); ?>"
                                             class="w-16 h-16 rounded-full object-cover border-2 border-white dark:!border-bg-card shadow-sm hover:scale-105 transition-transform">
-                                    @else
+                                    <?php else: ?>
                                         <div
                                             class="w-16 h-16 rounded-full bg-accent flex items-center justify-center text-white font-bold text-2xl border-2 border-white dark:!border-bg-card shadow-sm hover:scale-105 transition-transform">
-                                            {{ substr($article->author->name, 0, 1) }}
+                                            <?php echo e(substr($article->author->name, 0, 1)); ?>
+
                                         </div>
-                                    @endif
+                                    <?php endif; ?>
                                 </a>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <h3 class="font-bold text-gray-900 dark:!text-white text-lg mb-1"
                                     style="font-family: 'Poppins', sans-serif;">
-                                    <a href="{{ route('profile.show', $article->author->username ?? $article->author->id) }}"
+                                    <a href="<?php echo e(route('profile.show', $article->author->username ?? $article->author->id)); ?>"
                                         class="hover:text-accent transition-colors">
-                                        {{ $article->author->name }}
+                                        <?php echo e($article->author->name); ?>
+
                                     </a>
                                 </h3>
                                 <p class="text-sm text-gray-600 dark:!text-text-secondary line-clamp-2 mb-3">
-                                    {{ $article->author->bio ?? 'Content Creator at Nazaara Circle. Passionate about entertainment, movies, and pop culture.' }}
+                                    <?php echo e($article->author->bio ?? 'Content Creator at Nazaara Circle. Passionate about entertainment, movies, and pop culture.'); ?>
+
                                 </p>
-                                <a href="{{ route('profile.show', $article->author->username ?? $article->author->id) }}"
+                                <a href="<?php echo e(route('profile.show', $article->author->username ?? $article->author->id)); ?>"
                                     class="text-xs font-bold text-accent hover:text-accent-light uppercase tracking-wide inline-flex items-center gap-1">
                                     View Profile
                                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -310,15 +318,15 @@
                                 </a>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Navigation (Previous/Next) -->
-                    @if($previousArticle || $nextArticle)
+                    <?php if($previousArticle || $nextArticle): ?>
                         <div class="mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-gray-200 dark:!border-border-secondary">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                                 <!-- Previous Article -->
-                                @if($previousArticle)
-                                    <a href="{{ route('articles.show', $previousArticle->slug) }}"
+                                <?php if($previousArticle): ?>
+                                    <a href="<?php echo e(route('articles.show', $previousArticle->slug)); ?>"
                                         class="group flex items-center gap-4 p-4 bg-gray-50 hover:bg-gray-100 dark:!bg-bg-card-hover dark:!hover:bg-bg-card rounded-lg transition-colors border border-gray-200 dark:!border-border-secondary">
                                         <div class="flex-shrink-0">
                                             <svg class="w-6 h-6 text-gray-400 group-hover:text-accent transition-colors" fill="none"
@@ -330,30 +338,34 @@
                                         <div class="flex-1 min-w-0">
                                             <p class="text-xs text-gray-500 dark:!text-text-secondary mb-1"
                                                 style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                                {{ $article->series ? 'Previous in Series' : 'Previous Article' }}
+                                                <?php echo e($article->series ? 'Previous in Series' : 'Previous Article'); ?>
+
                                             </p>
                                             <p class="text-sm font-semibold text-gray-900 dark:!text-white truncate group-hover:text-accent transition-colors"
                                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                {{ $previousArticle->title }}
+                                                <?php echo e($previousArticle->title); ?>
+
                                             </p>
                                         </div>
                                     </a>
-                                @else
+                                <?php else: ?>
                                     <div></div>
-                                @endif
+                                <?php endif; ?>
 
                                 <!-- Next Article -->
-                                @if($nextArticle)
-                                    <a href="{{ route('articles.show', $nextArticle->slug) }}"
+                                <?php if($nextArticle): ?>
+                                    <a href="<?php echo e(route('articles.show', $nextArticle->slug)); ?>"
                                         class="group flex items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-gray-50 hover:bg-gray-100 dark:!bg-bg-card-hover dark:!hover:bg-bg-card rounded-lg transition-colors border border-gray-200 dark:!border-border-secondary text-right">
                                         <div class="flex-1 min-w-0">
                                             <p class="text-xs text-gray-500 dark:!text-text-secondary mb-1"
                                                 style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                                {{ $article->series ? 'Next in Series' : 'Next Article' }}
+                                                <?php echo e($article->series ? 'Next in Series' : 'Next Article'); ?>
+
                                             </p>
                                             <p class="text-xs sm:text-sm font-semibold text-gray-900 dark:!text-white truncate group-hover:text-accent transition-colors"
                                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                                {{ $nextArticle->title }}
+                                                <?php echo e($nextArticle->title); ?>
+
                                             </p>
                                         </div>
                                         <div class="flex-shrink-0">
@@ -364,39 +376,39 @@
                                             </svg>
                                         </div>
                                     </a>
-                                @endif
+                                <?php endif; ?>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Article Actions (Like & Bookmark Buttons) -->
                     <div
                         class="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-gray-200 dark:!border-border-secondary">
                         <div id="react-like-button-root"
-                             data-article-id="{{ $article->slug }}"
-                             data-is-liked="{{ $isLiked ?? false ? 'true' : 'false' }}"
-                             data-likes-count="{{ $article->likes()->count() }}"
-                             data-logged-in="{{ Auth::check() ? 'true' : 'false' }}">
+                             data-article-id="<?php echo e($article->slug); ?>"
+                             data-is-liked="<?php echo e($isLiked ?? false ? 'true' : 'false'); ?>"
+                             data-likes-count="<?php echo e($article->likes()->count()); ?>"
+                             data-logged-in="<?php echo e(Auth::check() ? 'true' : 'false'); ?>">
                         </div>
 
-                        @auth
+                        <?php if(auth()->guard()->check()): ?>
                             <button id="bookmarkButton"
-                                class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base {{ $isBookmarked ?? false ? 'bg-yellow-100 text-yellow-600 dark:!bg-yellow-900/20 dark:!text-yellow-400' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:!bg-bg-card-hover dark:!text-white dark:!hover:bg-bg-card' }}"
-                                data-article-slug="{{ $article->slug }}"
-                                data-bookmarked="{{ $isBookmarked ?? false ? 'true' : 'false' }}">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="{{ $isBookmarked ?? false ? 'currentColor' : 'none' }}"
+                                class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base <?php echo e($isBookmarked ?? false ? 'bg-yellow-100 text-yellow-600 dark:!bg-yellow-900/20 dark:!text-yellow-400' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:!bg-bg-card-hover dark:!text-white dark:!hover:bg-bg-card'); ?>"
+                                data-article-slug="<?php echo e($article->slug); ?>"
+                                data-bookmarked="<?php echo e($isBookmarked ?? false ? 'true' : 'false'); ?>">
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="<?php echo e($isBookmarked ?? false ? 'currentColor' : 'none'); ?>"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
                                 </svg>
                                 <span class="font-semibold" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                                     <span
-                                        class="hidden sm:inline">{{ $isBookmarked ?? false ? 'Bookmarked' : 'Bookmark' }}</span>
-                                    <span class="sm:hidden">{{ $isBookmarked ?? false ? 'Saved' : 'Save' }}</span>
+                                        class="hidden sm:inline"><?php echo e($isBookmarked ?? false ? 'Bookmarked' : 'Bookmark'); ?></span>
+                                    <span class="sm:hidden"><?php echo e($isBookmarked ?? false ? 'Saved' : 'Save'); ?></span>
                                 </span>
                             </button>
-                        @else
-                            <a href="{{ route('login') }}"
+                        <?php else: ?>
+                            <a href="<?php echo e(route('login')); ?>"
                                 class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all bg-gray-100 text-gray-700 hover:bg-gray-200 dark:!bg-bg-card-hover dark:!text-white dark:!hover:bg-bg-card text-sm sm:text-base">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -407,7 +419,7 @@
                                     <span class="sm:hidden">Save</span>
                                 </span>
                             </a>
-                        @endauth
+                        <?php endif; ?>
                     </div>
 
                     <!-- Social Sharing Section -->
@@ -417,15 +429,15 @@
                             Share:
                         </h3>
                         <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-                            @php
+                            <?php
                                 $articleUrl = route('articles.show', $article->slug);
                                 $articleTitle = urlencode($article->title);
                                 $articleDescription = urlencode($article->excerpt ?? $article->title);
                                 $articleImage = $article->featured_image_url ?? '';
-                            @endphp
+                            ?>
 
                             <!-- Facebook -->
-                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode($articleUrl) }}"
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo e(urlencode($articleUrl)); ?>"
                                 target="_blank" rel="noopener noreferrer"
                                 class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#1877F2] hover:bg-[#1565C0] text-white rounded-lg transition-all text-sm sm:text-base font-semibold"
                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
@@ -437,7 +449,7 @@
                             </a>
 
                             <!-- Twitter -->
-                            <a href="https://twitter.com/intent/tweet?url={{ urlencode($articleUrl) }}&text={{ $articleTitle }}"
+                            <a href="https://twitter.com/intent/tweet?url=<?php echo e(urlencode($articleUrl)); ?>&text=<?php echo e($articleTitle); ?>"
                                 target="_blank" rel="noopener noreferrer"
                                 class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#1DA1F2] hover:bg-[#0d8bd9] text-white rounded-lg transition-all text-sm sm:text-base font-semibold"
                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
@@ -449,7 +461,7 @@
                             </a>
 
                             <!-- WhatsApp -->
-                            <a href="https://wa.me/?text={{ urlencode($article->title . ' ' . $articleUrl) }}"
+                            <a href="https://wa.me/?text=<?php echo e(urlencode($article->title . ' ' . $articleUrl)); ?>"
                                 target="_blank" rel="noopener noreferrer"
                                 class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-lg transition-all text-sm sm:text-base font-semibold"
                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
@@ -472,7 +484,7 @@
                             </a>
 
                             <!-- Threads -->
-                            <a href="https://www.threads.net/intent/post?text={{ urlencode($article->title . ' ' . $articleUrl) }}"
+                            <a href="https://www.threads.net/intent/post?text=<?php echo e(urlencode($article->title . ' ' . $articleUrl)); ?>"
                                 target="_blank" rel="noopener noreferrer"
                                 class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg transition-all text-sm sm:text-base font-semibold"
                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
@@ -495,7 +507,7 @@
                             </a>
 
                             <!-- Telegram -->
-                            <a href="https://t.me/share/url?url={{ urlencode($articleUrl) }}&text={{ $articleTitle }}"
+                            <a href="https://t.me/share/url?url=<?php echo e(urlencode($articleUrl)); ?>&text=<?php echo e($articleTitle); ?>"
                                 target="_blank" rel="noopener noreferrer"
                                 class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#0088cc] hover:bg-[#0077b5] text-white rounded-lg transition-all text-sm sm:text-base font-semibold"
                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
@@ -507,7 +519,7 @@
                             </a>
 
                             <!-- Reddit -->
-                            <a href="https://reddit.com/submit?url={{ urlencode($articleUrl) }}&title={{ $articleTitle }}"
+                            <a href="https://reddit.com/submit?url=<?php echo e(urlencode($articleUrl)); ?>&title=<?php echo e($articleTitle); ?>"
                                 target="_blank" rel="noopener noreferrer"
                                 class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#FF4500] hover:bg-[#e63900] text-white rounded-lg transition-all text-sm sm:text-base font-semibold"
                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
@@ -519,7 +531,7 @@
                             </a>
 
                             <!-- LinkedIn -->
-                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ urlencode($articleUrl) }}"
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo e(urlencode($articleUrl)); ?>"
                                 target="_blank" rel="noopener noreferrer"
                                 class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#0077B5] hover:bg-[#006399] text-white rounded-lg transition-all text-sm sm:text-base font-semibold"
                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
@@ -531,7 +543,7 @@
                             </a>
 
                             <!-- Pinterest -->
-                            <a href="https://pinterest.com/pin/create/button/?url={{ urlencode($articleUrl) }}&description={{ $articleTitle }}&media={{ urlencode($articleImage) }}"
+                            <a href="https://pinterest.com/pin/create/button/?url=<?php echo e(urlencode($articleUrl)); ?>&description=<?php echo e($articleTitle); ?>&media=<?php echo e(urlencode($articleImage)); ?>"
                                 target="_blank" rel="noopener noreferrer"
                                 class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#BD081C] hover:bg-[#a00718] text-white rounded-lg transition-all text-sm sm:text-base font-semibold"
                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
@@ -545,7 +557,7 @@
                             <!-- Copy Link -->
                             <button id="copyLinkBtn"
                                 class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 dark:!bg-bg-card-hover dark:!text-white dark:!hover:bg-bg-card rounded-lg transition-all text-sm sm:text-base font-semibold"
-                                style="font-family: 'Poppins', sans-serif; font-weight: 600;" data-url="{{ $articleUrl }}">
+                                style="font-family: 'Poppins', sans-serif; font-weight: 600;" data-url="<?php echo e($articleUrl); ?>">
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
@@ -634,8 +646,8 @@
                     
                     <!-- Comments Section -->
                     <div id="react-comments-root"
-                         data-article-id="{{ $article->slug }}"
-                         data-comments="{{ json_encode($article->comments->map(function($comment) {
+                         data-article-id="<?php echo e($article->slug); ?>"
+                         data-comments="<?php echo e(json_encode($article->comments->map(function($comment) {
                              return [
                                  'id' => $comment->id,
                                  'name' => $comment->user ? $comment->user->name : $comment->name,
@@ -656,11 +668,11 @@
                                      ];
                                  })->values()
                              ];
-                         })->values()) }}"
-                         data-captcha-question="{{ $captchaQuestion ?? '0 + 0' }}"
-                         data-allow-comments="{{ $article->allow_comments ? 'true' : 'false' }}"
-                         data-logged-in="{{ Auth::check() ? 'true' : 'false' }}"
-                         data-current-user="{{ Auth::check() ? json_encode(['name' => Auth::user()->name, 'email' => Auth::user()->email]) : 'null' }}">
+                         })->values())); ?>"
+                         data-captcha-question="<?php echo e($captchaQuestion ?? '0 + 0'); ?>"
+                         data-allow-comments="<?php echo e($article->allow_comments ? 'true' : 'false'); ?>"
+                         data-logged-in="<?php echo e(Auth::check() ? 'true' : 'false'); ?>"
+                         data-current-user="<?php echo e(Auth::check() ? json_encode(['name' => Auth::user()->name, 'email' => Auth::user()->email]) : 'null'); ?>">
                     </div>
 
                 </div> <!-- End Content Column -->
@@ -668,7 +680,7 @@
                 <!-- Right Sidebar -->
                 <div class="w-full lg:w-80 xl:w-96 flex-shrink-0 space-y-8 mt-12 lg:mt-0">
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
     // Copy Link Function
     function copyArticleLink() {
@@ -687,14 +699,14 @@
         });
     }
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
                     
                     <!-- Search Widget -->
                     <div
                         class="bg-gray-50 dark:!bg-bg-card rounded-2xl p-6 border border-gray-200 dark:!border-border-secondary shadow-sm">
                         <h3 class="text-lg font-bold text-gray-900 dark:!text-white mb-4 uppercase tracking-wider"
                             style="font-family: 'Poppins', sans-serif;">Search</h3>
-                        <form action="{{ route('search') }}" method="GET" class="relative">
+                        <form action="<?php echo e(route('search')); ?>" method="GET" class="relative">
                             <input type="text" name="q" placeholder="Find stories..."
                                 class="w-full pl-5 pr-12 py-3.5 bg-white dark:!bg-bg-card-hover border border-gray-200 dark:!border-border-primary rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent dark:!text-white transition-all font-medium shadow-sm">
                             <button type="submit"
@@ -708,7 +720,7 @@
                     </div>
 
                     <!-- Trending / Featured Widget -->
-                    @if(isset($featuredArticles) && $featuredArticles->count() > 0)
+                    <?php if(isset($featuredArticles) && $featuredArticles->count() > 0): ?>
                         <div
                             class="bg-white dark:!bg-bg-card rounded-2xl border border-gray-200 dark:!border-border-secondary overflow-hidden shadow-sm">
                             <div
@@ -720,45 +732,47 @@
                                 </h3>
                             </div>
                             <div class="divide-y divide-gray-100 dark:!divide-border-primary">
-                                @foreach($featuredArticles->take(5) as $index => $featured)
-                                    <a href="{{ route('articles.show', $featured->slug) }}"
+                                <?php $__currentLoopData = $featuredArticles->take(5); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $featured): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <a href="<?php echo e(route('articles.show', $featured->slug)); ?>"
                                         class="flex gap-4 p-5 hover:bg-gray-50 dark:!hover:bg-bg-card-hover transition-colors group items-start">
                                         <div class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden relative shadow-md">
-                                            @if($featured->featured_image)
-                                                <img src="{{ $featured->featured_image_url }}" alt="{{ $featured->title }}"
+                                            <?php if($featured->featured_image): ?>
+                                                <img src="<?php echo e($featured->featured_image_url); ?>" alt="<?php echo e($featured->title); ?>"
                                                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                            @else
+                                            <?php else: ?>
                                                 <div class="w-full h-full bg-gradient-to-br from-gray-700 to-gray-900"></div>
-                                            @endif
+                                            <?php endif; ?>
                                             <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors">
                                             </div>
                                             <!-- Rank Badge -->
                                             <div
                                                 class="absolute top-0 left-0 bg-accent text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br-lg shadow-sm">
-                                                #{{ $index + 1 }}
+                                                #<?php echo e($index + 1); ?>
+
                                             </div>
                                         </div>
                                         <div class="flex-1 min-w-0 py-0.5">
                                             <span
-                                                class="text-[10px] font-bold text-accent uppercase tracking-wider mb-1 block">{{ $featured->category->name ?? 'News' }}</span>
+                                                class="text-[10px] font-bold text-accent uppercase tracking-wider mb-1 block"><?php echo e($featured->category->name ?? 'News'); ?></span>
                                             <h4 class="text-sm font-bold text-gray-900 dark:!text-white leading-snug line-clamp-2 group-hover:text-accent transition-colors mb-1"
                                                 style="font-family: 'Poppins', sans-serif;">
-                                                {{ $featured->title }}
+                                                <?php echo e($featured->title); ?>
+
                                             </h4>
                                             <div class="flex items-center gap-2 text-xs text-gray-400 dark:!text-text-tertiary">
-                                                <span>{{ $featured->created_at->format('M d') }}</span>
+                                                <span><?php echo e($featured->created_at->format('M d')); ?></span>
                                                 <span>â€¢</span>
-                                                <span>{{ $featured->views }} views</span>
+                                                <span><?php echo e($featured->views); ?> views</span>
                                             </div>
                                         </div>
                                     </a>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Categories Widget -->
-                    @if(isset($categories) && $categories->count() > 0)
+                    <?php if(isset($categories) && $categories->count() > 0): ?>
                         <div
                             class="bg-white dark:!bg-bg-card rounded-2xl border border-gray-200 dark:!border-border-secondary p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-gray-900 dark:!text-white mb-5 flex items-center gap-2 uppercase tracking-wider"
@@ -767,18 +781,18 @@
                                 Explore Topics
                             </h3>
                             <div class="flex flex-wrap gap-2">
-                                @foreach($categories as $category)
-                                    <a href="{{ route('categories.show', $category->slug) }}"
+                                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <a href="<?php echo e(route('categories.show', $category->slug)); ?>"
                                         class="group pl-3 pr-4 py-2 bg-gray-50 hover:bg-accent hover:text-white dark:!bg-bg-card-hover dark:!text-text-secondary dark:!hover:bg-accent dark:!hover:text-white rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 border border-gray-100 dark:!border-border-primary hover:border-accent dark:!hover:border-accent hover:shadow-md">
                                         <span class="w-2 h-2 rounded-full bg-accent group-hover:bg-white transition-colors"></span>
-                                        <span>{{ $category->name }}</span>
+                                        <span><?php echo e($category->name); ?></span>
                                         <span
-                                            class="opacity-40 text-xs ml-auto group-hover:opacity-80">({{ $category->articles_count }})</span>
+                                            class="opacity-40 text-xs ml-auto group-hover:opacity-80">(<?php echo e($category->articles_count); ?>)</span>
                                     </a>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                     <!-- Newsletter Widget (Visual) -->
                     <div
@@ -811,7 +825,7 @@
                     </div>
 
                     <!-- Tags Widget -->
-                    @if(isset($popularTags) && $popularTags->count() > 0)
+                    <?php if(isset($popularTags) && $popularTags->count() > 0): ?>
                         <div
                             class="bg-white dark:!bg-bg-card rounded-2xl border border-gray-200 dark:!border-border-secondary p-6 shadow-sm">
                             <h3 class="text-lg font-bold text-gray-900 dark:!text-white mb-5 flex items-center gap-2 uppercase tracking-wider"
@@ -820,22 +834,23 @@
                                 Popular Tags
                             </h3>
                             <div class="flex flex-wrap gap-2">
-                                @foreach($popularTags as $tag)
-                                    <a href="{{ route('tags.show', $tag->slug) }}"
+                                <?php $__currentLoopData = $popularTags; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tag): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <a href="<?php echo e(route('tags.show', $tag->slug)); ?>"
                                         class="text-xs font-bold px-3 py-1.5 bg-gray-100 text-gray-600 hover:bg-black hover:text-white dark:!bg-bg-card-hover dark:!text-text-secondary dark:!hover:bg-white dark:!hover:text-black rounded-lg transition-colors uppercase tracking-wide border border-transparent hover:border-gray-900">
-                                        #{{ $tag->name }}
+                                        #<?php echo e($tag->name); ?>
+
                                     </a>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </div>
                         </div>
-                    @endif
+                    <?php endif; ?>
 
                 </div> <!-- End Right Sidebar -->
 
             </div> <!-- End Flex Container -->
 
             <!-- Related Articles Section (Full Width) -->
-            @if($relatedArticles->count() > 0)
+            <?php if($relatedArticles->count() > 0): ?>
                 <div class="mt-20 pt-12 border-t border-gray-200 dark:!border-border-secondary">
                     <div class="flex items-end justify-between mb-10">
                         <div>
@@ -845,33 +860,35 @@
                                 More Like This
                             </h2>
                         </div>
-                        <a href="{{ route('articles.index') }}"
+                        <a href="<?php echo e(route('articles.index')); ?>"
                             class="group flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-accent transition-colors uppercase tracking-wide">
                             <span>View All Stories</span>
                             <span class="group-hover:translate-x-1 transition-transform">â†’</span>
                         </a>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        @foreach($relatedArticles->take(4) as $relatedArticle)
-                            <a href="{{ route('articles.show', $relatedArticle->slug) }}" class="group block h-full">
+                        <?php $__currentLoopData = $relatedArticles->take(4); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $relatedArticle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <a href="<?php echo e(route('articles.show', $relatedArticle->slug)); ?>" class="group block h-full">
                                 <div class="aspect-[16/10] rounded-2xl overflow-hidden mb-5 relative shadow-lg">
-                                    @if($relatedArticle->featured_image)
-                                        <img src="{{ $relatedArticle->featured_image_url }}" alt="{{ $relatedArticle->title }}"
+                                    <?php if($relatedArticle->featured_image): ?>
+                                        <img src="<?php echo e($relatedArticle->featured_image_url); ?>" alt="<?php echo e($relatedArticle->title); ?>"
                                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                                    @else
+                                    <?php else: ?>
                                         <div class="w-full h-full bg-gray-200 dark:!bg-gray-800"></div>
-                                    @endif
+                                    <?php endif; ?>
                                     <div
                                         class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-40 transition-opacity">
                                     </div>
                                     <span
                                         class="absolute top-4 left-4 bg-accent/90 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-lg">
-                                        {{ $relatedArticle->category->name ?? 'Article' }}
+                                        <?php echo e($relatedArticle->category->name ?? 'Article'); ?>
+
                                     </span>
                                 </div>
                                 <h3 class="text-xl font-bold text-gray-900 dark:!text-white mb-3 leading-tight group-hover:text-accent transition-colors"
                                     style="font-family: 'Poppins', sans-serif;">
-                                    {{ $relatedArticle->title }}
+                                    <?php echo e($relatedArticle->title); ?>
+
                                 </h3>
                                 <div class="flex items-center gap-3 text-xs text-gray-400 font-bold uppercase tracking-wide">
                                     <span class="flex items-center gap-1">
@@ -879,22 +896,22 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
-                                        {{ $relatedArticle->reading_time ?? 5 }} min
+                                        <?php echo e($relatedArticle->reading_time ?? 5); ?> min
                                     </span>
                                     <span>â€¢</span>
-                                    <span>{{ $relatedArticle->created_at->format('M d, Y') }}</span>
+                                    <span><?php echo e($relatedArticle->created_at->format('M d, Y')); ?></span>
                                 </div>
                             </a>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
-            @endif
+            <?php endif; ?>
 
         </div> <!-- End Main Wrapper -->
     </article>
 
     <!-- Fixed Series Progress Widget (Bottom Right) -->
-    @if($article->series && $seriesArticles && $seriesArticles->count() > 0)
+    <?php if($article->series && $seriesArticles && $seriesArticles->count() > 0): ?>
         <div class="hidden lg:block fixed bottom-4 right-4 z-40 w-72" x-data="{ open: false }">
             <div
                 class="bg-white dark:!bg-bg-card rounded-lg border border-gray-200 dark:!border-border-secondary shadow-xl overflow-hidden">
@@ -905,10 +922,11 @@
                         <div class="text-left">
                             <p class="text-xs font-semibold mb-0.5"
                                 style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                Article {{ $currentSeriesIndex ?? 1 }} of {{ $totalSeriesArticles }}
+                                Article <?php echo e($currentSeriesIndex ?? 1); ?> of <?php echo e($totalSeriesArticles); ?>
+
                             </p>
                             <p class="text-xs opacity-90" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                {{ round((($currentSeriesIndex ?? 1) / $totalSeriesArticles) * 100) }}% Complete
+                                <?php echo e(round((($currentSeriesIndex ?? 1) / $totalSeriesArticles) * 100)); ?>% Complete
                             </p>
                         </div>
                         <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none"
@@ -917,12 +935,12 @@
                         </svg>
                     </div>
                     <!-- Progress Bar -->
-                    @php
+                    <?php
                         $progressPercentage = $totalSeriesArticles ? round((($currentSeriesIndex ?? 1) / $totalSeriesArticles) * 100) : 0;
-                    @endphp
+                    ?>
                     <div class="mt-2 w-full bg-white/20 rounded-full h-1.5">
                         <div class="bg-white h-1.5 rounded-full transition-all duration-300"
-                            style="width: {{ $progressPercentage }}%;"></div>
+                            style="width: <?php echo e($progressPercentage); ?>%;"></div>
                     </div>
                 </button>
 
@@ -934,10 +952,11 @@
                     x-transition:leave-start="opacity-100 transform scale-100"
                     x-transition:leave-end="opacity-0 transform scale-95" style="display: none;">
                     <div class="p-4 max-h-96 overflow-y-auto">
-                        <a href="{{ route('series.show', $article->series->slug) }}"
+                        <a href="<?php echo e(route('series.show', $article->series->slug)); ?>"
                             class="text-xs font-semibold text-purple-600 dark:!text-purple-400 hover:text-purple-700 dark:!hover:text-purple-300 transition-colors mb-3 block"
                             style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                            {{ $article->series->title }}
+                            <?php echo e($article->series->title); ?>
+
                         </a>
 
                         <h4 class="text-xs font-semibold text-gray-900 dark:!text-white mb-2"
@@ -945,34 +964,35 @@
                             Table of Contents
                         </h4>
                         <div class="space-y-1.5">
-                            @foreach($seriesArticles as $seriesArticle)
+                            <?php $__currentLoopData = $seriesArticles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $seriesArticle): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <div
-                                    class="flex items-start gap-2 {{ $seriesArticle->id === $article->id ? 'bg-purple-50 dark:!bg-purple-900/10 rounded p-1.5 -mx-1.5' : '' }}">
+                                    class="flex items-start gap-2 <?php echo e($seriesArticle->id === $article->id ? 'bg-purple-50 dark:!bg-purple-900/10 rounded p-1.5 -mx-1.5' : ''); ?>">
                                     <span class="text-xs text-gray-500 dark:!text-text-tertiary w-5 flex-shrink-0 pt-0.5"
                                         style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                        {{ $seriesArticle->series_order ?? $loop->iteration }}.
+                                        <?php echo e($seriesArticle->series_order ?? $loop->iteration); ?>.
                                     </span>
-                                    @if($seriesArticle->id === $article->id)
+                                    <?php if($seriesArticle->id === $article->id): ?>
                                         <span class="text-xs font-semibold text-purple-600 dark:!text-purple-400 flex-1 line-clamp-2"
                                             style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                            {{ $seriesArticle->title }} <span class="text-purple-500">(Current)</span>
+                                            <?php echo e($seriesArticle->title); ?> <span class="text-purple-500">(Current)</span>
                                         </span>
-                                    @else
-                                        <a href="{{ route('articles.show', $seriesArticle->slug) }}"
+                                    <?php else: ?>
+                                        <a href="<?php echo e(route('articles.show', $seriesArticle->slug)); ?>"
                                             class="text-xs text-gray-700 hover:text-purple-600 dark:!text-text-secondary dark:!hover:text-purple-400 flex-1 line-clamp-2 transition-colors"
                                             style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                            {{ $seriesArticle->title }}
+                                            <?php echo e($seriesArticle->title); ?>
+
                                         </a>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    @endif
-@push('scripts')
+    <?php endif; ?>
+<?php $__env->startPush('scripts'); ?>
 <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Article Bookmark functionality
@@ -1022,7 +1042,7 @@
                             if (response.status === 401) {
                                 return response.json().then(err => {
                                     alert(err.message || 'You must be logged in to bookmark articles.');
-                                    window.location.href = '{{ route("login") }}';
+                                    window.location.href = '<?php echo e(route("login")); ?>';
                                     throw new Error('Unauthorized');
                                 });
                             }
@@ -1439,7 +1459,7 @@
             document.querySelector('.lightbox-overlay').addEventListener('click', closeImageLightbox);
         })();
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
 
     <style>
         /* Image Lightbox Styles */
@@ -1895,4 +1915,6 @@
     </script>
 
     <!-- Social Bar Ad - Removed -->
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\asdfq\Desktop\Nazaarabox\resources\views/articles/show.blade.php ENDPATH**/ ?>

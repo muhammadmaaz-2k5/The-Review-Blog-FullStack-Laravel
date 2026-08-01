@@ -72,9 +72,10 @@ function ClerkSync() {
 
 import FollowButton from './components/FollowButton';
 import LikeButton from './components/LikeButton';
+import BookmarkButton from './components/BookmarkButton';
 import Comments from './components/Comments';
 
-function ClerkApp({ signInMount, signUpMount, followButtonMount, likeButtonMount, commentsMount }) {
+function ClerkApp({ signInMount, signUpMount, followButtonMount, likeButtonMounts, bookmarkButtonMounts, commentsMount }) {
     // If we are on the login or register page, we shouldn't mount the component 
     // if the user is already signed in and synced with Laravel, because they would be redirected.
     // However, if they are NOT synced, ClerkSync will handle the sync and redirect.
@@ -107,15 +108,27 @@ function ClerkApp({ signInMount, signUpMount, followButtonMount, likeButtonMount
                 />,
                 followButtonMount
             )}
-            {likeButtonMount && createPortal(
+            {likeButtonMounts && Array.from(likeButtonMounts).map((mount, index) => createPortal(
                 <LikeButton 
-                    articleId={likeButtonMount.dataset.articleId}
-                    initialIsLiked={likeButtonMount.dataset.isLiked}
-                    initialLikesCount={likeButtonMount.dataset.likesCount}
-                    isLoggedIn={likeButtonMount.dataset.loggedIn === 'true'}
+                    key={`like-${index}`}
+                    articleId={mount.dataset.articleId}
+                    initialIsLiked={mount.dataset.isLiked}
+                    initialLikesCount={mount.dataset.likesCount}
+                    isLoggedIn={mount.dataset.loggedIn === 'true'}
+                    variant={mount.dataset.variant || 'main'}
                 />,
-                likeButtonMount
-            )}
+                mount
+            ))}
+            {bookmarkButtonMounts && Array.from(bookmarkButtonMounts).map((mount, index) => createPortal(
+                <BookmarkButton 
+                    key={`bookmark-${index}`}
+                    articleId={mount.dataset.articleId}
+                    initialIsBookmarked={mount.dataset.isBookmarked}
+                    isLoggedIn={mount.dataset.loggedIn === 'true'}
+                    variant={mount.dataset.variant || 'main'}
+                />,
+                mount
+            ))}
             {commentsMount && createPortal(
                 <Comments 
                     articleId={commentsMount.dataset.articleId}
@@ -135,7 +148,8 @@ const mountReactApp = () => {
     const signInMount = document.getElementById('react-clerk-sign-in');
     const signUpMount = document.getElementById('react-clerk-sign-up');
     const followButtonMount = document.getElementById('react-follow-button-root');
-    const likeButtonMount = document.getElementById('react-like-button-root');
+    const likeButtonMounts = document.querySelectorAll('.react-like-button-root');
+    const bookmarkButtonMounts = document.querySelectorAll('.react-bookmark-button-root');
     const commentsMount = document.getElementById('react-comments-root');
 
     let appRoot = document.getElementById('clerk-react-app-root');
@@ -151,7 +165,8 @@ const mountReactApp = () => {
             signInMount={signInMount} 
             signUpMount={signUpMount} 
             followButtonMount={followButtonMount} 
-            likeButtonMount={likeButtonMount}
+            likeButtonMounts={likeButtonMounts.length > 0 ? likeButtonMounts : null}
+            bookmarkButtonMounts={bookmarkButtonMounts.length > 0 ? bookmarkButtonMounts : null}
             commentsMount={commentsMount}
         />
     );
