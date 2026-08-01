@@ -16,7 +16,7 @@ class IsGuest
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check()) {
-            return redirect()->route('home')->with('info', 'You are already logged in.');
+            return redirect()->route('home')->with('info', 'You\'re already signed in.');
         }
 
         return $next($request);

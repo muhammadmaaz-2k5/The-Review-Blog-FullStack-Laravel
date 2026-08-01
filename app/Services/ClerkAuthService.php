@@ -102,7 +102,6 @@ class ClerkAuthService
         
         // Set default role for new users
         $user->role = 'user'; 
-        $user->status = 'active'; 
         
         $user->save();
 

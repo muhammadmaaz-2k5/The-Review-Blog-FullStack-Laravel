@@ -91,14 +91,6 @@ return [
         'api_version' => env('THREADS_API_VERSION', 'v18.0'),
     ],
 
-    'adsense' => [
-        'client_id' => env('ADSENSE_CLIENT_ID'),
-        'unit_1' => env('ADSENSE_UNIT_1', ''),
-        'unit_2' => env('ADSENSE_UNIT_2', ''),
-        'unit_3' => env('ADSENSE_UNIT_3', ''),
-        'unit_4' => env('ADSENSE_UNIT_4', ''),
-        'unit_5' => env('ADSENSE_UNIT_5', ''),
-    ],
 
     'youtube' => [
         'api_key' => env('YOUTUBE_API_KEY'),

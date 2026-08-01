@@ -207,10 +207,10 @@ Route::get('/api/articles-index/load-more', [ArticleController::class, 'loadMore
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/login/{any?}', [AuthController::class, 'showLoginForm'])->where('any', '.*')->name('login');
     Route::post('/login', [AuthController::class, 'login']);
     
-    Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::get('/register/{any?}', [AuthController::class, 'showRegisterForm'])->where('any', '.*')->name('register');
     Route::post('/register', [AuthController::class, 'register']);
     
     Route::get('/forgot-password', [PasswordResetController::class, 'showForgotPasswordForm'])->name('password.request');

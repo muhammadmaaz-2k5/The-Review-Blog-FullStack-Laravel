@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-@php
+<?php
     // Normalize locale to valid BCP 47 format (e.g., en_US -> en, en-US -> en)
     $htmlLang = $seo['locale'] ?? app()->getLocale() ?? 'en';
     // Extract language code (before underscore or hyphen) and convert to lowercase
     $htmlLang = strtolower(explode('_', explode('-', $htmlLang)[0])[0]);
-@endphp
-<html lang="{{ $htmlLang }}">
+?>
+<html lang="<?php echo e($htmlLang); ?>">
 <head>
     <!-- Clarity tracking code - Deferred for better LCP -->
     <script>
@@ -35,20 +35,20 @@
     <meta name="p:domain_verify" content="95b5cd53b3e893c3e8b4ba73c79352dd"/>
     
     <!-- Google Search Console Verification -->
-    @if(config('services.google.search_console_verification'))
-    <meta name="google-site-verification" content="{{ config('services.google.search_console_verification') }}" />
-    @endif
+    <?php if(config('services.google.search_console_verification')): ?>
+    <meta name="google-site-verification" content="<?php echo e(config('services.google.search_console_verification')); ?>" />
+    <?php endif; ?>
     
     <!-- Additional Google Verification -->
-    @if(config('services.google.site_verification'))
-    <meta name="google-site-verification" content="{{ config('services.google.site_verification') }}" />
-    @endif
+    <?php if(config('services.google.site_verification')): ?>
+    <meta name="google-site-verification" content="<?php echo e(config('services.google.site_verification')); ?>" />
+    <?php endif; ?>
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     
-    @php
+    <?php
         // ALWAYS prioritize PageSeo from database - ignore controller SEO if PageSeo exists
         $seoService = app(\App\Services\SeoService::class);
         
@@ -89,20 +89,20 @@
             // Unknown route - use controller SEO or auto-detect
             $seo = $seo ?? $seoService->forCurrentRoute();
         }
-    @endphp
+    ?>
     
     <!-- RSS Feed Links for Auto-Discovery -->
-    <link rel="alternate" type="application/rss+xml" title="{{ config('app.name') }} RSS Feed" href="{{ route('feed') }}">
-    <link rel="alternate" type="application/rss+xml" title="{{ config('app.name') }} RSS Feed" href="{{ url('/feed.xml') }}">
+    <link rel="alternate" type="application/rss+xml" title="<?php echo e(config('app.name')); ?> RSS Feed" href="<?php echo e(route('feed')); ?>">
+    <link rel="alternate" type="application/rss+xml" title="<?php echo e(config('app.name')); ?> RSS Feed" href="<?php echo e(url('/feed.xml')); ?>">
     
     <!-- Primary Meta Tags -->
-    <title>{{ $seo['title'] ?? 'Nazaara Circle - Entertainment News & Reviews' }}</title>
-    <meta name="title" content="{{ $seo['title'] ?? 'Nazaara Circle - Entertainment News & Reviews' }}">
-    <meta name="description" content="{{ $seo['description'] ?? 'Your ultimate destination for entertainment news, in-depth movie reviews, TV series explained, and celebrity biographies. Stay updated with the latest pop culture trends.' }}">
-    <meta name="keywords" content="{{ $seo['keywords'] ?? 'Nazaara Circle, entertainment, movie reviews, tv series explained, celebrity biographies, pop culture, cinema' }}">
-    <meta name="author" content="{{ $seo['author'] ?? 'Nazaara Circle' }}">
-    <meta name="robots" content="{{ $seo['robots'] ?? 'index, follow' }}">
-    <meta name="language" content="{{ $seo['locale'] ?? 'en' }}">
+    <title><?php echo e($seo['title'] ?? 'Nazaara Circle - Entertainment News & Reviews'); ?></title>
+    <meta name="title" content="<?php echo e($seo['title'] ?? 'Nazaara Circle - Entertainment News & Reviews'); ?>">
+    <meta name="description" content="<?php echo e($seo['description'] ?? 'Your ultimate destination for entertainment news, in-depth movie reviews, TV series explained, and celebrity biographies. Stay updated with the latest pop culture trends.'); ?>">
+    <meta name="keywords" content="<?php echo e($seo['keywords'] ?? 'Nazaara Circle, entertainment, movie reviews, tv series explained, celebrity biographies, pop culture, cinema'); ?>">
+    <meta name="author" content="<?php echo e($seo['author'] ?? 'Nazaara Circle'); ?>">
+    <meta name="robots" content="<?php echo e($seo['robots'] ?? 'index, follow'); ?>">
+    <meta name="language" content="<?php echo e($seo['locale'] ?? 'en'); ?>">
     <meta name="revisit-after" content="7 days">
     <meta name="rating" content="general">
     <meta name="distribution" content="global">
@@ -115,40 +115,40 @@
     <meta name="format-detection" content="telephone=no">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="{{ $seo['canonical'] ?? url()->current() }}">
+    <link rel="canonical" href="<?php echo e($seo['canonical'] ?? url()->current()); ?>">
     
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="{{ $seo['type'] ?? 'website' }}">
-    <meta property="og:url" content="{{ $seo['url'] ?? url()->current() }}">
-    <meta property="og:title" content="{{ $seo['og_title'] ?? $seo['title'] ?? 'Nazaara Circle - Entertainment News & Reviews' }}">
-    <meta property="og:description" content="{{ $seo['og_description'] ?? $seo['description'] ?? 'Your ultimate destination for entertainment news, in-depth movie reviews, TV series explained, and celebrity biographies.' }}">
-    <meta property="og:image" content="{{ $seo['og_image'] ?? $seo['image'] ?? asset('icon.png') }}">
+    <meta property="og:type" content="<?php echo e($seo['type'] ?? 'website'); ?>">
+    <meta property="og:url" content="<?php echo e($seo['url'] ?? url()->current()); ?>">
+    <meta property="og:title" content="<?php echo e($seo['og_title'] ?? $seo['title'] ?? 'Nazaara Circle - Entertainment News & Reviews'); ?>">
+    <meta property="og:description" content="<?php echo e($seo['og_description'] ?? $seo['description'] ?? 'Your ultimate destination for entertainment news, in-depth movie reviews, TV series explained, and celebrity biographies.'); ?>">
+    <meta property="og:image" content="<?php echo e($seo['og_image'] ?? $seo['image'] ?? asset('icon.png')); ?>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="{{ $seo['title'] ?? 'Nazaara Circle' }}">
+    <meta property="og:image:alt" content="<?php echo e($seo['title'] ?? 'Nazaara Circle'); ?>">
     <meta property="og:site_name" content="Nazaara Circle">
-    <meta property="og:locale" content="{{ $seo['locale'] ?? 'en_US' }}">
-    @if(!empty($seo['published_time']))
-    <meta property="og:published_time" content="{{ $seo['published_time'] }}">
-    @endif
-    @if(!empty($seo['modified_time']))
-    <meta property="og:modified_time" content="{{ $seo['modified_time'] }}">
-    @endif
-    @if($seoService->getFacebookAppId())
-    <meta property="fb:app_id" content="{{ $seoService->getFacebookAppId() }}">
-    @endif
+    <meta property="og:locale" content="<?php echo e($seo['locale'] ?? 'en_US'); ?>">
+    <?php if(!empty($seo['published_time'])): ?>
+    <meta property="og:published_time" content="<?php echo e($seo['published_time']); ?>">
+    <?php endif; ?>
+    <?php if(!empty($seo['modified_time'])): ?>
+    <meta property="og:modified_time" content="<?php echo e($seo['modified_time']); ?>">
+    <?php endif; ?>
+    <?php if($seoService->getFacebookAppId()): ?>
+    <meta property="fb:app_id" content="<?php echo e($seoService->getFacebookAppId()); ?>">
+    <?php endif; ?>
     
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="{{ $seo['twitter_card'] ?? 'summary_large_image' }}">
-    <meta name="twitter:url" content="{{ $seo['url'] ?? url()->current() }}">
-    <meta name="twitter:title" content="{{ $seo['twitter_title'] ?? $seo['title'] ?? 'Nazaara Circle - Entertainment News & Reviews' }}">
-    <meta name="twitter:description" content="{{ $seo['twitter_description'] ?? $seo['description'] ?? 'Your ultimate destination for entertainment news, in-depth movie reviews, TV series explained, and celebrity biographies.' }}">
-    <meta name="twitter:image" content="{{ $seo['twitter_image'] ?? $seo['image'] ?? asset('icon.png') }}">
-    <meta name="twitter:image:alt" content="{{ $seo['twitter_title'] ?? $seo['title'] ?? 'Nazaara Circle' }}">
-    @if($seoService->getTwitterHandle())
-    <meta name="twitter:site" content="{{ $seoService->getTwitterHandle() }}">
-    <meta name="twitter:creator" content="{{ $seoService->getTwitterHandle() }}">
-    @endif
+    <meta name="twitter:card" content="<?php echo e($seo['twitter_card'] ?? 'summary_large_image'); ?>">
+    <meta name="twitter:url" content="<?php echo e($seo['url'] ?? url()->current()); ?>">
+    <meta name="twitter:title" content="<?php echo e($seo['twitter_title'] ?? $seo['title'] ?? 'Nazaara Circle - Entertainment News & Reviews'); ?>">
+    <meta name="twitter:description" content="<?php echo e($seo['twitter_description'] ?? $seo['description'] ?? 'Your ultimate destination for entertainment news, in-depth movie reviews, TV series explained, and celebrity biographies.'); ?>">
+    <meta name="twitter:image" content="<?php echo e($seo['twitter_image'] ?? $seo['image'] ?? asset('icon.png')); ?>">
+    <meta name="twitter:image:alt" content="<?php echo e($seo['twitter_title'] ?? $seo['title'] ?? 'Nazaara Circle'); ?>">
+    <?php if($seoService->getTwitterHandle()): ?>
+    <meta name="twitter:site" content="<?php echo e($seoService->getTwitterHandle()); ?>">
+    <meta name="twitter:creator" content="<?php echo e($seoService->getTwitterHandle()); ?>">
+    <?php endif; ?>
     
     <!-- Additional SEO Enhancements -->
     <meta name="theme-color" content="#E50914">
@@ -157,16 +157,16 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="application-name" content="Nazaara Circle">
     <meta name="msapplication-TileColor" content="#E50914">
-    <meta name="msapplication-config" content="{{ asset('browserconfig.xml') }}">
+    <meta name="msapplication-config" content="<?php echo e(asset('browserconfig.xml')); ?>">
     
     <!-- Alternate Languages (Hreflang) -->
-    @if(!empty($seo['alternate_locales']) && is_array($seo['alternate_locales']))
-        @foreach($seo['alternate_locales'] as $locale => $url)
-        <link rel="alternate" hreflang="{{ $locale }}" href="{{ $url }}">
-        @endforeach
-    @endif
-    <link rel="alternate" hreflang="x-default" href="{{ url()->current() }}">
-    <link rel="alternate" hreflang="{{ str_replace('_', '-', $seo['locale'] ?? 'en-US') }}" href="{{ url()->current() }}">
+    <?php if(!empty($seo['alternate_locales']) && is_array($seo['alternate_locales'])): ?>
+        <?php $__currentLoopData = $seo['alternate_locales']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $locale => $url): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <link rel="alternate" hreflang="<?php echo e($locale); ?>" href="<?php echo e($url); ?>">
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    <?php endif; ?>
+    <link rel="alternate" hreflang="x-default" href="<?php echo e(url()->current()); ?>">
+    <link rel="alternate" hreflang="<?php echo e(str_replace('_', '-', $seo['locale'] ?? 'en-US')); ?>" href="<?php echo e(url()->current()); ?>">
     
     <!-- Preconnect for Performance (Core Web Vitals Optimization) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -181,41 +181,42 @@
     <link rel="preload" as="script" href="https://cdn.tailwindcss.com">
     
     <!-- Structured Data (JSON-LD) -->
-    @if(!empty($seo['schema']))
-        @foreach($seo['schema'] as $schema)
+    <?php if(!empty($seo['schema'])): ?>
+        <?php $__currentLoopData = $seo['schema']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $schema): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <script type="application/ld+json">
-        {!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+        <?php echo json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?>
+
         </script>
-        @endforeach
-    @endif
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    <?php endif; ?>
     
     <!-- Favicon - Using icon.png with cache busting -->
-    @php
+    <?php
         $iconVersion = file_exists(public_path('icon.png')) ? filemtime(public_path('icon.png')) : time();
         $iconUrl = asset('icon.png') . '?v=' . $iconVersion;
-    @endphp
+    ?>
     <!-- Override default favicon.ico -->
-    <link rel="icon" type="image/png" href="{{ $iconUrl }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ $iconUrl }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ $iconUrl }}">
-    <link rel="shortcut icon" type="image/png" href="{{ $iconUrl }}">
+    <link rel="icon" type="image/png" href="<?php echo e($iconUrl); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo e($iconUrl); ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo e($iconUrl); ?>">
+    <link rel="shortcut icon" type="image/png" href="<?php echo e($iconUrl); ?>">
     <!-- Explicitly override favicon.ico -->
-    <link rel="alternate icon" type="image/png" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" sizes="152x152" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" sizes="144x144" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" sizes="120x120" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" sizes="114x114" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" sizes="72x72" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" sizes="60x60" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" sizes="57x57" href="{{ $iconUrl }}">
-    <link rel="apple-touch-icon" href="{{ $iconUrl }}">
-    <meta name="msapplication-TileImage" content="{{ $iconUrl }}">
+    <link rel="alternate icon" type="image/png" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" sizes="152x152" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" sizes="144x144" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" sizes="120x120" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" sizes="114x114" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" sizes="76x76" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" sizes="72x72" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" sizes="60x60" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" sizes="57x57" href="<?php echo e($iconUrl); ?>">
+    <link rel="apple-touch-icon" href="<?php echo e($iconUrl); ?>">
+    <meta name="msapplication-TileImage" content="<?php echo e($iconUrl); ?>">
     <meta name="msapplication-TileColor" content="#000000">
     
     <!-- Web App Manifest -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <link rel="manifest" href="<?php echo e(asset('manifest.json')); ?>">
     
     <!-- Google Fonts - Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -261,12 +262,12 @@
     </script>
     
     <!-- Preload critical CSS for better LCP -->
-    <link rel="preload" as="style" href="{{ asset('css/theme.css') }}">
-    <link rel="preload" as="style" href="{{ asset('css/components.css') }}">
+    <link rel="preload" as="style" href="<?php echo e(asset('css/theme.css')); ?>">
+    <link rel="preload" as="style" href="<?php echo e(asset('css/components.css')); ?>">
     
     <!-- Load CSS files -->
-    <link rel="stylesheet" href="{{ asset('css/theme.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/components.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/theme.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('css/components.css')); ?>">
     
     <style>
         :root {
@@ -1791,17 +1792,17 @@
         }
     </style>
     
-    @stack('head')
+    <?php echo $__env->yieldPushContent('head'); ?>
     
 
     <!-- Clerk JS SDK & React App -->
-    @if(config('services.clerk.publishable_key'))
+    <?php if(config('services.clerk.publishable_key')): ?>
     <script>
-        window.LARAVEL_AUTH = {{ auth()->check() ? 'true' : 'false' }};
+        window.LARAVEL_AUTH = <?php echo e(auth()->check() ? 'true' : 'false'); ?>;
     </script>
-    @viteReactRefresh
-    @vite(['resources/js/react/app.jsx'])
-    @endif
+    <?php echo app('Illuminate\Foundation\Vite')->reactRefresh(); ?>
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/js/react/app.jsx']); ?>
+    <?php endif; ?>
 </head>
 <body>
     <!-- Top Navigation Bar -->
@@ -1810,11 +1811,11 @@
             <div class="flex items-center justify-between h-10">
                 <!-- Left Section - Pages -->
                 <div class="flex items-center gap-3 lg:gap-4">
-                    <a href="{{ route('about') }}" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">About Us</a>
-                    <a href="{{ route('privacy') }}" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">Privacy</a>
-                    <a href="{{ route('tips.create') }}" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">Tip Us</a>
-                    <a href="{{ route('contact') }}" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">Contact</a>
-                    <a href="{{ route('feed') }}" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">RSS</a>
+                    <a href="<?php echo e(route('about')); ?>" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">About Us</a>
+                    <a href="<?php echo e(route('privacy')); ?>" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">Privacy</a>
+                    <a href="<?php echo e(route('tips.create')); ?>" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">Tip Us</a>
+                    <a href="<?php echo e(route('contact')); ?>" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">Contact</a>
+                    <a href="<?php echo e(route('feed')); ?>" class="text-xs sm:text-sm text-gray-300 hover:text-white transition-colors font-medium">RSS</a>
                 </div>
                 
                 <!-- Right Section - Social Media Icons -->
@@ -1845,13 +1846,13 @@
     <nav id="mainNavbar" class="sticky top-[40px] z-50 bg-white backdrop-blur-lg shadow-lg dark:!bg-bg-primary/95 dark:!border-border-primary">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14 sm:h-16 md:h-20">
-                <a href="{{ route('home') }}" class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-accent hover:text-accent-light transition-colors dark-mode:text-accent" style="font-family: 'Poppins', sans-serif; font-weight: 800; letter-spacing: -0.03em;">
+                <a href="<?php echo e(route('home')); ?>" class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-accent hover:text-accent-light transition-colors dark-mode:text-accent" style="font-family: 'Poppins', sans-serif; font-weight: 800; letter-spacing: -0.03em;">
                     Nazaara Circle
                 </a>
                 
                 <!-- Search Bar - Hidden on Mobile -->
                 <div class="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8 relative" x-data="{ searchOpen: false, searchQuery: '' }" @click.away="searchOpen = false">
-                    <form action="{{ route('search') }}" method="GET" class="w-full" @submit="if(searchQuery.trim()) { searchOpen = false; }">
+                    <form action="<?php echo e(route('search')); ?>" method="GET" class="w-full" @submit="if(searchQuery.trim()) { searchOpen = false; }">
                         <div class="relative">
                             <div class="flex items-center bg-gray-100 dark:!bg-bg-card-hover rounded-lg border border-gray-300 dark:!border-border-primary">
                                 <svg class="absolute left-3 w-5 h-5 text-gray-400 dark:!text-text-tertiary pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1860,7 +1861,7 @@
                                 <input type="text" 
                                        name="q" 
                                        x-model="searchQuery"
-                                       value="{{ request('q') }}"
+                                       value="<?php echo e(request('q')); ?>"
                                        placeholder="Search" 
                                        @focus="searchOpen = true"
                                        @input="searchOpen = true"
@@ -1870,7 +1871,7 @@
                                     <button type="submit" class="px-3 py-1 text-xs bg-gray-300 hover:bg-gray-400 dark:!bg-bg-card dark:!hover:bg-bg-card-hover text-gray-700 dark:!text-white rounded transition-colors" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                                         GO
                                     </button>
-                                    <a href="{{ route('search') }}" class="px-3 py-1 text-xs bg-gray-300 hover:bg-gray-400 dark:!bg-bg-card dark:!hover:bg-bg-card-hover text-gray-700 dark:!text-white rounded transition-colors" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
+                                    <a href="<?php echo e(route('search')); ?>" class="px-3 py-1 text-xs bg-gray-300 hover:bg-gray-400 dark:!bg-bg-card dark:!hover:bg-bg-card-hover text-gray-700 dark:!text-white rounded transition-colors" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                                         ADVANCED
                                     </a>
                                 </div>
@@ -1907,19 +1908,21 @@
                     </li>
                 </ul>
                 <div class="flex items-center gap-2 sm:gap-4">
-                    @auth
+                    <?php if(auth()->guard()->check()): ?>
                         <!-- User Dropdown - Desktop -->
                         <div class="relative hidden md:block" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-all dark:!bg-bg-card dark:!border-border-primary dark:!hover:bg-bg-card-hover">
-                                @if(auth()->user()->avatar)
-                                    <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover">
-                                @else
+                                <?php if(auth()->user()->avatar): ?>
+                                    <img src="<?php echo e(auth()->user()->avatar); ?>" alt="<?php echo e(auth()->user()->name); ?>" class="w-8 h-8 rounded-full object-cover">
+                                <?php else: ?>
                                     <div class="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white font-semibold">
-                                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                        <?php echo e(strtoupper(substr(auth()->user()->name, 0, 1))); ?>
+
                                     </div>
-                                @endif
+                                <?php endif; ?>
                                 <span class="text-gray-900 dark:!text-white font-semibold" style="font-family: 'Poppins', sans-serif;">
-                                    {{ auth()->user()->name }}
+                                    <?php echo e(auth()->user()->name); ?>
+
                                 </span>
                                 <svg class="w-4 h-4 text-gray-900 dark:!text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -1940,13 +1943,15 @@
                                 <div class="py-1">
                                     <div class="px-4 py-2 border-b border-gray-200 dark:!border-border-primary">
                                         <p class="text-sm font-semibold text-gray-900 dark:!text-white" style="font-family: 'Poppins', sans-serif;">
-                                            {{ auth()->user()->name }}
+                                            <?php echo e(auth()->user()->name); ?>
+
                                         </p>
                                         <p class="text-xs text-gray-500 dark:!text-text-muted" style="font-family: 'Poppins', sans-serif;">
-                                            {{ auth()->user()->email }}
+                                            <?php echo e(auth()->user()->email); ?>
+
                                         </p>
                                     </div>
-                                    <a href="{{ route('user.dashboard') }}" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
+                                    <a href="<?php echo e(route('user.dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
                                         <div class="flex items-center gap-2">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
@@ -1954,8 +1959,8 @@
                                             My Dashboard
                                         </div>
                                     </a>
-                                    @if(auth()->user()->isAuthor())
-                                        <a href="{{ route('author.dashboard') }}" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
+                                    <?php if(auth()->user()->isAuthor()): ?>
+                                        <a href="<?php echo e(route('author.dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
                                             <div class="flex items-center gap-2">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -1963,7 +1968,7 @@
                                                 Author Dashboard
                                             </div>
                                         </a>
-                                        <a href="{{ route('admin.articles.index') }}" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
+                                        <a href="<?php echo e(route('admin.articles.index')); ?>" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
                                             <div class="flex items-center gap-2">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -1971,9 +1976,9 @@
                                                 My Articles
                                             </div>
                                         </a>
-                                    @endif
-                                    @if(auth()->user()->isAdmin())
-                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
+                                    <?php endif; ?>
+                                    <?php if(auth()->user()->isAdmin()): ?>
+                                        <a href="<?php echo e(route('admin.dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
                                             <div class="flex items-center gap-2">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
@@ -1981,9 +1986,9 @@
                                                 Admin Dashboard
                                             </div>
                                         </a>
-                                    @endif
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
+                                    <?php endif; ?>
+                                    <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                        <?php echo csrf_field(); ?>
                                         <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:!text-red-400 dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
                                             <div class="flex items-center gap-2">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1996,19 +2001,19 @@
                                 </div>
                             </div>
                         </div>
-                    @else
-                        @if(!request()->routeIs('login') && !request()->routeIs('register'))
+                    <?php else: ?>
+                        <?php if(!request()->routeIs('login') && !request()->routeIs('register')): ?>
                             <!-- Login/Register Buttons - Desktop -->
                             <div class="hidden md:flex items-center gap-3">
-                                <a href="{{ route('login') }}" class="px-4 py-2 text-gray-900 hover:text-accent transition-colors font-semibold dark:!text-white" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
+                                <a href="<?php echo e(route('login')); ?>" class="px-4 py-2 text-gray-900 hover:text-accent transition-colors font-semibold dark:!text-white" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                                     Login
                                 </a>
-                                <a href="{{ route('register') }}" class="px-6 py-2 bg-accent hover:bg-accent-light text-white font-semibold rounded-lg transition-all hover:scale-105 hover:shadow-accent" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
+                                <a href="<?php echo e(route('register')); ?>" class="px-6 py-2 bg-accent hover:bg-accent-light text-white font-semibold rounded-lg transition-all hover:scale-105 hover:shadow-accent" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                                     Sign Up
                                 </a>
                             </div>
-                        @endif
-                    @endauth
+                        <?php endif; ?>
+                    <?php endif; ?>
                     
                     <!-- Theme Toggle -->
                     <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-all dark:!bg-bg-card dark:!border-border-primary dark:!hover:bg-bg-card-hover" title="Toggle Theme">
@@ -2029,13 +2034,13 @@
     <nav id="collapsedNavbar" class="fixed top-[40px] left-0 right-0 z-50 bg-white backdrop-blur-lg shadow-lg border-b border-gray-200 dark:!bg-bg-primary/95 dark:!border-border-primary transform -translate-y-full transition-transform duration-300" style="top: 40px !important;">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14">
-                <a href="{{ route('home') }}" class="text-lg sm:text-xl font-bold text-accent hover:text-accent-light transition-colors dark-mode:text-accent" style="font-family: 'Poppins', sans-serif; font-weight: 800;">
+                <a href="<?php echo e(route('home')); ?>" class="text-lg sm:text-xl font-bold text-accent hover:text-accent-light transition-colors dark-mode:text-accent" style="font-family: 'Poppins', sans-serif; font-weight: 800;">
                     Nazaara Circle
                 </a>
                 
                 <!-- Search Bar - Hidden on Mobile -->
                 <div class="hidden md:flex flex-1 max-w-sm mx-4 lg:mx-6 relative" x-data="{ searchOpen: false, searchQuery: '' }" @click.away="searchOpen = false">
-                    <form action="{{ route('search') }}" method="GET" class="w-full" @submit="if(searchQuery.trim()) { searchOpen = false; }">
+                    <form action="<?php echo e(route('search')); ?>" method="GET" class="w-full" @submit="if(searchQuery.trim()) { searchOpen = false; }">
                         <div class="relative">
                             <div class="flex items-center bg-gray-100 dark:!bg-bg-card-hover rounded-lg border border-gray-300 dark:!border-border-primary">
                                 <svg class="absolute left-2.5 w-4 h-4 text-gray-400 dark:!text-text-tertiary pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2044,7 +2049,7 @@
                                 <input type="text" 
                                        name="q" 
                                        x-model="searchQuery"
-                                       value="{{ request('q') }}"
+                                       value="<?php echo e(request('q')); ?>"
                                        placeholder="Search" 
                                        @focus="searchOpen = true"
                                        @input="searchOpen = true"
@@ -2054,7 +2059,7 @@
                                     <button type="submit" class="px-2 py-0.5 text-xs bg-gray-300 hover:bg-gray-400 dark:!bg-bg-card dark:!hover:bg-bg-card-hover text-gray-700 dark:!text-white rounded transition-colors" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                                         GO
                                     </button>
-                                    <a href="{{ route('search') }}" class="px-2 py-0.5 text-xs bg-gray-300 hover:bg-gray-400 dark:!bg-bg-card dark:!hover:bg-bg-card-hover text-gray-700 dark:!text-white rounded transition-colors" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
+                                    <a href="<?php echo e(route('search')); ?>" class="px-2 py-0.5 text-xs bg-gray-300 hover:bg-gray-400 dark:!bg-bg-card dark:!hover:bg-bg-card-hover text-gray-700 dark:!text-white rounded transition-colors" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                                         ADVANCED
                                     </a>
                                 </div>
@@ -2089,16 +2094,17 @@
                 <ul class="hidden md:flex items-center gap-1 lg:gap-2">
                 </ul>
                 <div class="flex items-center gap-2 sm:gap-4">
-                    @auth
+                    <?php if(auth()->guard()->check()): ?>
                         <div class="relative hidden md:block" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-all dark:!bg-bg-card dark:!border-border-primary dark:!hover:bg-bg-card-hover">
-                                @if(auth()->user()->avatar)
-                                    <img src="{{ auth()->user()->avatar }}" alt="{{ auth()->user()->name }}" class="w-6 h-6 rounded-full object-cover">
-                                @else
+                                <?php if(auth()->user()->avatar): ?>
+                                    <img src="<?php echo e(auth()->user()->avatar); ?>" alt="<?php echo e(auth()->user()->name); ?>" class="w-6 h-6 rounded-full object-cover">
+                                <?php else: ?>
                                     <div class="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-xs font-semibold">
-                                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                                        <?php echo e(strtoupper(substr(auth()->user()->name, 0, 1))); ?>
+
                                     </div>
-                                @endif
+                                <?php endif; ?>
                                 <svg class="w-3 h-3 text-gray-900 dark:!text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
@@ -2116,27 +2122,29 @@
                                 <div class="py-1">
                                     <div class="px-4 py-2 border-b border-gray-200 dark:!border-border-primary">
                                         <p class="text-sm font-semibold text-gray-900 dark:!text-white" style="font-family: 'Poppins', sans-serif;">
-                                            {{ auth()->user()->name }}
+                                            <?php echo e(auth()->user()->name); ?>
+
                                         </p>
                                         <p class="text-xs text-gray-500 dark:!text-text-muted" style="font-family: 'Poppins', sans-serif;">
-                                            {{ auth()->user()->email }}
+                                            <?php echo e(auth()->user()->email); ?>
+
                                         </p>
                                     </div>
-                                    <a href="{{ route('user.dashboard') }}" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
+                                    <a href="<?php echo e(route('user.dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
                                         My Dashboard
                                     </a>
-                                    @if(auth()->user()->isAuthor())
-                                        <a href="{{ route('author.dashboard') }}" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
+                                    <?php if(auth()->user()->isAuthor()): ?>
+                                        <a href="<?php echo e(route('author.dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
                                             Author Dashboard
                                         </a>
-                                    @endif
-                                    @if(auth()->user()->isAdmin())
-                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
+                                    <?php endif; ?>
+                                    <?php if(auth()->user()->isAdmin()): ?>
+                                        <a href="<?php echo e(route('admin.dashboard')); ?>" class="block px-4 py-2 text-sm text-gray-900 hover:bg-gray-100 dark:!text-white dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
                                             Admin Dashboard
                                         </a>
-                                    @endif
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
+                                    <?php endif; ?>
+                                    <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                        <?php echo csrf_field(); ?>
                                         <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:!text-red-400 dark:!hover:bg-bg-card-hover transition-colors" style="font-family: 'Poppins', sans-serif;">
                                             Logout
                                         </button>
@@ -2144,18 +2152,18 @@
                                 </div>
                             </div>
                         </div>
-                    @else
-                        @if(!request()->routeIs('login') && !request()->routeIs('register'))
+                    <?php else: ?>
+                        <?php if(!request()->routeIs('login') && !request()->routeIs('register')): ?>
                             <div class="hidden md:flex items-center gap-2">
-                                <a href="{{ route('login') }}" class="px-3 py-1.5 text-sm text-gray-900 hover:text-accent transition-colors font-semibold dark:!text-white" style="font-family: 'Poppins', sans-serif;">
+                                <a href="<?php echo e(route('login')); ?>" class="px-3 py-1.5 text-sm text-gray-900 hover:text-accent transition-colors font-semibold dark:!text-white" style="font-family: 'Poppins', sans-serif;">
                                     Login
                                 </a>
-                                <a href="{{ route('register') }}" class="px-4 py-1.5 bg-accent hover:bg-accent-light text-white text-sm font-semibold rounded-lg transition-all" style="font-family: 'Poppins', sans-serif;">
+                                <a href="<?php echo e(route('register')); ?>" class="px-4 py-1.5 bg-accent hover:bg-accent-light text-white text-sm font-semibold rounded-lg transition-all" style="font-family: 'Poppins', sans-serif;">
                                     Sign Up
                                 </a>
                             </div>
-                        @endif
-                    @endauth
+                        <?php endif; ?>
+                    <?php endif; ?>
                     <button id="themeToggleCollapsed" class="p-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-all dark:!bg-bg-card dark:!border-border-primary dark:!hover:bg-bg-card-hover" title="Toggle Theme">
                         <svg id="sunIconCollapsed" class="w-4 h-4 text-gray-900 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -2172,36 +2180,37 @@
     <nav id="secondaryNavbar" class="hidden md:block sticky top-[40px] z-40 bg-white border-b border-gray-200 dark:bg-bg-card dark:border-border-primary shadow-sm transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-wrap justify-center items-center gap-4 sm:gap-6 md:gap-8 py-3">
-                <a href="{{ route('home') }}" class="secondary-nav-link">
+                <a href="<?php echo e(route('home')); ?>" class="secondary-nav-link">
                     Home
                 </a>
                 
-                @php
+                <?php
                     $top10Category = \App\Models\Category::where('slug', 'top-10')->first();
-                @endphp
-                @if($top10Category)
-                <a href="{{ route('categories.show', $top10Category->slug) }}" 
+                ?>
+                <?php if($top10Category): ?>
+                <a href="<?php echo e(route('categories.show', $top10Category->slug)); ?>" 
                    class="group relative inline-flex items-center gap-2 px-4 py-2 rounded-lg overflow-hidden font-bold text-sm uppercase tracking-wider transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                   style="background: linear-gradient(135deg, {{ $top10Category->color ?? '#E50914' }}, #b20710); color: white;">
+                   style="background: linear-gradient(135deg, <?php echo e($top10Category->color ?? '#E50914'); ?>, #b20710); color: white;">
                     <span class="relative z-10 flex items-center gap-2">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                         </svg>
-                        {{ $top10Category->name ?? 'Top 10' }}
+                        <?php echo e($top10Category->name ?? 'Top 10'); ?>
+
                     </span>
                     <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
                     <span class="absolute -bottom-1 -right-1 w-16 h-16 bg-white opacity-10 rounded-full transform group-hover:scale-150 transition-transform duration-500"></span>
                 </a>
-                @endif
+                <?php endif; ?>
                 
                 
                 
                 
-                <a href="{{ route('articles.index') }}" class="secondary-nav-link">
+                <a href="<?php echo e(route('articles.index')); ?>" class="secondary-nav-link">
                     Reviews
                 </a>
 
-                <a href="{{ route('series.index') }}" class="secondary-nav-link">
+                <a href="<?php echo e(route('series.index')); ?>" class="secondary-nav-link">
                     Series
                 </a>
             </div>
@@ -2209,14 +2218,14 @@
     </nav>
     
     <main style="overflow-x: visible;" class="pb-16 md:pb-0">
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </main>
     
     <!-- Bottom Navigation Menu (Mobile Only) -->
     <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 dark:!bg-bg-primary dark:!border-border-primary shadow-lg md:hidden" style="box-shadow: 0 -2px 10px rgba(0,0,0,0.1);">
         <div class="flex items-center justify-around h-16 px-2 safe-area-inset-bottom">
             <!-- Home -->
-            <a href="{{ route('home') }}" class="bottom-nav-item {{ request()->routeIs('home') ? 'active' : '' }}" data-route="home">
+            <a href="<?php echo e(route('home')); ?>" class="bottom-nav-item <?php echo e(request()->routeIs('home') ? 'active' : ''); ?>" data-route="home">
                 <svg class="bottom-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                 </svg>
@@ -2224,7 +2233,7 @@
             </a>
             
             <!-- Reviews -->
-            <a href="{{ route('articles.index') }}" class="bottom-nav-item {{ request()->routeIs('articles.*') ? 'active' : '' }}" data-route="articles">
+            <a href="<?php echo e(route('articles.index')); ?>" class="bottom-nav-item <?php echo e(request()->routeIs('articles.*') ? 'active' : ''); ?>" data-route="articles">
                 <svg class="bottom-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
@@ -2232,7 +2241,7 @@
             </a>
             
             <!-- Search -->
-            <a href="{{ route('search') }}" class="bottom-nav-item {{ request()->routeIs('search') ? 'active' : '' }}" data-route="search">
+            <a href="<?php echo e(route('search')); ?>" class="bottom-nav-item <?php echo e(request()->routeIs('search') ? 'active' : ''); ?>" data-route="search">
                 <svg class="bottom-nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
@@ -2254,23 +2263,8 @@
                 
                 
                 
-                {{-- <a href="{{ route('categories.index') }}" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
-                    <div class="flex items-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                        </svg>
-                        <span>Categories</span>
-                    </div>
-                </a>
-                <a href="{{ route('tags.index') }}" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
-                    <div class="flex items-center gap-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
-                        </svg>
-                        <span>Tags</span>
-                    </div>
-                </a> --}}
-                <a href="{{ route('series.index') }}" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
+                
+                <a href="<?php echo e(route('series.index')); ?>" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
                     <div class="flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
@@ -2278,7 +2272,7 @@
                         <span>Series</span>
                     </div>
                 </a>
-                <a href="{{ route('how-to-circle') }}" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
+                <a href="<?php echo e(route('how-to-circle')); ?>" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
                     <div class="flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
@@ -2286,7 +2280,7 @@
                         <span>How to Circle</span>
                     </div>
                 </a>
-                <a href="{{ route('about') }}" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
+                <a href="<?php echo e(route('about')); ?>" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
                     <div class="flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -2294,7 +2288,7 @@
                         <span>About Us</span>
                     </div>
                 </a>
-                <a href="{{ route('privacy') }}" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
+                <a href="<?php echo e(route('privacy')); ?>" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
                     <div class="flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -2302,7 +2296,7 @@
                         <span>Privacy Terms</span>
                     </div>
                 </a>
-                <a href="{{ route('contact') }}" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
+                <a href="<?php echo e(route('contact')); ?>" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors border-b border-gray-100 dark:!border-border-primary">
                     <div class="flex items-center gap-3">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
@@ -2310,9 +2304,9 @@
                         <span>Contact</span>
                     </div>
                 </a>
-                @auth
+                <?php if(auth()->guard()->check()): ?>
                     <div class="border-t border-gray-200 dark:!border-border-primary mt-2 pt-2">
-                        <a href="{{ route('user.dashboard') }}" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors">
+                        <a href="<?php echo e(route('user.dashboard')); ?>" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors">
                             <div class="flex items-center gap-3">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -2321,10 +2315,10 @@
                             </div>
                         </a>
                     </div>
-                @else
-                        @if(!request()->routeIs('login') && !request()->routeIs('register'))
+                <?php else: ?>
+                        <?php if(!request()->routeIs('login') && !request()->routeIs('register')): ?>
                             <div class="border-t border-gray-200 dark:!border-border-primary mt-2 pt-2">
-                                <a href="{{ route('login') }}" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors">
+                                <a href="<?php echo e(route('login')); ?>" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors">
                                     <div class="flex items-center gap-3">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
@@ -2333,8 +2327,8 @@
                                     </div>
                                 </a>
                             </div>
-                        @endif
-                @endauth
+                        <?php endif; ?>
+                <?php endif; ?>
             </div>
         </div>
     </nav>
@@ -2359,23 +2353,23 @@
                     <!-- Left Column -->
                     <div>
                         <ul class="space-y-2">
-                            <li><a href="{{ route('about') }}" class="text-gray-300 hover:text-white text-sm transition-colors">About Us</a></li>
-                            <li><a href="{{ route('sitemaps') }}" class="text-gray-300 hover:text-white text-sm transition-colors">Sitemaps</a></li>
-                            <li><a href="{{ route('tips.create') }}" class="text-gray-300 hover:text-white text-sm transition-colors">Feedback</a></li>
-                            <li><a href="{{ route('archives') }}" class="text-gray-300 hover:text-white text-sm transition-colors">Archives</a></li>
-                            <li><a href="{{ route('contact') }}" class="text-gray-300 hover:text-white text-sm transition-colors">Contact Us</a></li>
-                            <li><a href="{{ route('rss') }}" class="text-gray-300 hover:text-white text-sm transition-colors">RSS</a></li>
+                            <li><a href="<?php echo e(route('about')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">About Us</a></li>
+                            <li><a href="<?php echo e(route('sitemaps')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">Sitemaps</a></li>
+                            <li><a href="<?php echo e(route('tips.create')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">Feedback</a></li>
+                            <li><a href="<?php echo e(route('archives')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">Archives</a></li>
+                            <li><a href="<?php echo e(route('contact')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">Contact Us</a></li>
+                            <li><a href="<?php echo e(route('rss')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">RSS</a></li>
                                                     </ul>
                     </div>
                     
                     <!-- Right Column -->
                     <div>
                         <ul class="space-y-2">
-                            <li><a href="{{ route('careers') }}" class="text-gray-300 hover:text-white text-sm transition-colors">Career</a></li>
-                            <li><a href="{{ route('privacy') }}" class="text-gray-300 hover:text-white text-sm transition-colors">Privacy Terms</a></li>
-                            <li><a href="{{ route('ethics') }}" class="text-gray-300 hover:text-white text-sm transition-colors">Ethics</a></li>
-                            <li><a href="{{ route('editorial-policy') }}" class="text-gray-300 hover:text-white text-sm transition-colors">Editorial Policy</a></li>
-                            <li><a href="{{ route('complaint-redressal') }}" class="text-gray-300 hover:text-white text-sm transition-colors">Complaint Redressal</a></li>
+                            <li><a href="<?php echo e(route('careers')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">Career</a></li>
+                            <li><a href="<?php echo e(route('privacy')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">Privacy Terms</a></li>
+                            <li><a href="<?php echo e(route('ethics')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">Ethics</a></li>
+                            <li><a href="<?php echo e(route('editorial-policy')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">Editorial Policy</a></li>
+                            <li><a href="<?php echo e(route('complaint-redressal')); ?>" class="text-gray-300 hover:text-white text-sm transition-colors">Complaint Redressal</a></li>
                         </ul>
                     </div>
                 </div>
@@ -2409,7 +2403,7 @@
             <!-- Copyright Section -->
             <div class="border-t border-gray-700 pt-6 mt-8">
                 <p class="text-center text-sm text-gray-400">
-                    Â© Copyright Red Pixels Ventures Limited {{ date('Y') }}. All rights reserved.
+                    Â© Copyright Red Pixels Ventures Limited <?php echo e(date('Y')); ?>. All rights reserved.
                 </p>
             </div>
         </div>
@@ -2505,10 +2499,11 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
     <!-- TinyMCE Editor (only for admin pages) -->
-    @if(request()->is('admin/*'))
-        @include('components.head.tinymce-config')
-    @endif
+    <?php if(request()->is('admin/*')): ?>
+        <?php echo $__env->make('components.head.tinymce-config', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+    <?php endif; ?>
     
-     @stack('scripts')
+     <?php echo $__env->yieldPushContent('scripts'); ?>
 
     
+<?php /**PATH C:\Users\asdfq\Desktop\Nazaarabox\resources\views/layouts/app.blade.php ENDPATH**/ ?>

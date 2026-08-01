@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Login - Nazaara Circle'); ?>
 
-@section('title', 'Login - Nazaara Circle')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#141414]">
     <!-- Background Effects -->
     <div class="absolute inset-0 z-0">
@@ -17,19 +15,21 @@
     <div class="max-w-md w-full space-y-8 relative z-10 flex flex-col items-center">
 
 
-        @if(session('success'))
+        <?php if(session('success')): ?>
             <div class="bg-green-500/10 border border-green-500/30 text-green-400 px-4 py-3 rounded-xl flex items-center gap-3 shadow-lg shadow-green-900/10 w-full">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                {{ session('success') }}
-            </div>
-        @endif
+                <?php echo e(session('success')); ?>
 
-        @if(session('error'))
+            </div>
+        <?php endif; ?>
+
+        <?php if(session('error')): ?>
             <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-xl flex items-center gap-3 shadow-lg shadow-red-900/10 w-full">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                {{ session('error') }}
+                <?php echo e(session('error')); ?>
+
             </div>
-        @endif
+        <?php endif; ?>
 
         <div id="react-clerk-sign-in"></div>
         <div id="clerk-loading" class="text-white text-center py-4 hidden">
@@ -38,4 +38,6 @@
     </div>
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\asdfq\Desktop\Nazaarabox\resources\views/auth/login.blade.php ENDPATH**/ ?>

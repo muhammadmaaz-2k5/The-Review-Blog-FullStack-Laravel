@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Register - Nazaara Circle'); ?>
 
-@section('title', 'Register - Nazaara Circle')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="relative min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#141414]">
     <!-- Background Effects -->
     <div class="absolute inset-0 z-0">
@@ -23,4 +21,6 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\asdfq\Desktop\Nazaarabox\resources\views/auth/register.blade.php ENDPATH**/ ?>
