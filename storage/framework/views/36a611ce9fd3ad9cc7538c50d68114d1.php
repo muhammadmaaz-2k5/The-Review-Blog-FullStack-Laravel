@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'My Dashboard'); ?>
 
-@section('title', 'My Dashboard')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Header -->
     <div class="mb-8">
@@ -10,52 +8,55 @@
             My Dashboard
         </h1>
         <p class="text-gray-600 dark:!text-text-secondary mt-1" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-            Welcome back, {{ auth()->user()->name }}! Here's an overview of your activity.
+            Welcome back, <?php echo e(auth()->user()->name); ?>! Here's an overview of your activity.
         </p>
     </div>
 
     <!-- Success/Error Messages -->
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg dark:!bg-green-900/20 dark:!border-green-800 dark:!text-green-400" style="font-family: 'Poppins', sans-serif;">
-            {{ session('success') }}
-        </div>
-    @endif
+            <?php echo e(session('success')); ?>
 
-    @if(session('error'))
-        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:!bg-red-900/20 dark:!border-red-800 dark:!text-red-400" style="font-family: 'Poppins', sans-serif;">
-            {{ session('error') }}
         </div>
-    @endif
+    <?php endif; ?>
+
+    <?php if(session('error')): ?>
+        <div class="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg dark:!bg-red-900/20 dark:!border-red-800 dark:!text-red-400" style="font-family: 'Poppins', sans-serif;">
+            <?php echo e(session('error')); ?>
+
+        </div>
+    <?php endif; ?>
 
     <!-- Author Request Section -->
-    @if(!auth()->user()->isAuthor())
-        @php
+    <?php if(!auth()->user()->isAuthor()): ?>
+        <?php
             $authorStatus = 'none';
             if (isset($authorRequest) && $authorRequest) {
                 if ($authorRequest->isPending()) $authorStatus = 'pending';
                 elseif ($authorRequest->isRejected()) $authorStatus = 'rejected';
             }
-        @endphp
+        ?>
         <div id="react-become-author-root" 
-             data-csrf-token="{{ csrf_token() }}"
-             data-status="{{ $authorStatus }}"
-             data-message="{{ isset($authorRequest) ? $authorRequest->message : '' }}"
-             data-admin-notes="{{ isset($authorRequest) ? $authorRequest->admin_notes : '' }}"
-             data-submitted-date="{{ isset($authorRequest) && $authorRequest ? $authorRequest->created_at->format('F j, Y \a\t g:i A') : '' }}">
+             data-csrf-token="<?php echo e(csrf_token()); ?>"
+             data-status="<?php echo e($authorStatus); ?>"
+             data-message="<?php echo e(isset($authorRequest) ? $authorRequest->message : ''); ?>"
+             data-admin-notes="<?php echo e(isset($authorRequest) ? $authorRequest->admin_notes : ''); ?>"
+             data-submitted-date="<?php echo e(isset($authorRequest) && $authorRequest ? $authorRequest->created_at->format('F j, Y \a\t g:i A') : ''); ?>">
         </div>
-    @endif
+    <?php endif; ?>
 
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Bookmarks -->
-        <a href="{{ route('bookmarks.index') }}" class="bg-white dark:!bg-bg-card rounded-lg border border-gray-200 dark:!border-border-secondary p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer block">
+        <a href="<?php echo e(route('bookmarks.index')); ?>" class="bg-white dark:!bg-bg-card rounded-lg border border-gray-200 dark:!border-border-secondary p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer block">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-semibold text-gray-600 dark:!text-text-secondary uppercase tracking-wider" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                         Bookmarks
                     </p>
                     <p class="text-3xl font-bold text-gray-900 dark:!text-white mt-2" style="font-family: 'Poppins', sans-serif; font-weight: 700;">
-                        {{ number_format($totalBookmarks) }}
+                        <?php echo e(number_format($totalBookmarks)); ?>
+
                     </p>
                 </div>
                 <div class="p-3 bg-blue-100 dark:!bg-blue-900/20 rounded-lg">
@@ -65,7 +66,7 @@
                 </div>
             </div>
             <div class="mt-4 text-sm text-gray-600 dark:!text-text-secondary" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                {{ $bookmarksThisMonth }} added this month
+                <?php echo e($bookmarksThisMonth); ?> added this month
             </div>
             <div class="mt-4 text-sm text-blue-600 dark:!text-blue-400 font-semibold" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                 View All →
@@ -80,7 +81,8 @@
                         Comments
                     </p>
                     <p class="text-3xl font-bold text-gray-900 dark:!text-white mt-2" style="font-family: 'Poppins', sans-serif; font-weight: 700;">
-                        {{ number_format($totalComments) }}
+                        <?php echo e(number_format($totalComments)); ?>
+
                     </p>
                 </div>
                 <div class="p-3 bg-purple-100 dark:!bg-purple-900/20 rounded-lg">
@@ -90,7 +92,7 @@
                 </div>
             </div>
             <div class="mt-4 text-sm text-gray-600 dark:!text-text-secondary" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                {{ $commentsThisMonth }} this month
+                <?php echo e($commentsThisMonth); ?> this month
             </div>
         </div>
 
@@ -102,7 +104,8 @@
                         Liked Articles
                     </p>
                     <p class="text-3xl font-bold text-gray-900 dark:!text-white mt-2" style="font-family: 'Poppins', sans-serif; font-weight: 700;">
-                        {{ number_format($totalLikes) }}
+                        <?php echo e(number_format($totalLikes)); ?>
+
                     </p>
                 </div>
                 <div class="p-3 bg-red-100 dark:!bg-red-900/20 rounded-lg">
@@ -124,7 +127,8 @@
                         Reading History
                     </p>
                     <p class="text-3xl font-bold text-gray-900 dark:!text-white mt-2" style="font-family: 'Poppins', sans-serif; font-weight: 700;">
-                        {{ number_format($totalReadingHistory) }}
+                        <?php echo e(number_format($totalReadingHistory)); ?>
+
                     </p>
                 </div>
                 <div class="p-3 bg-green-100 dark:!bg-green-900/20 rounded-lg">
@@ -147,36 +151,39 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:!text-white" style="font-family: 'Poppins', sans-serif; font-weight: 700;">
                     Recent Bookmarks
                 </h2>
-                <a href="{{ route('bookmarks.index') }}" class="text-sm text-accent hover:text-accent-light font-semibold transition-colors" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
+                <a href="<?php echo e(route('bookmarks.index')); ?>" class="text-sm text-accent hover:text-accent-light font-semibold transition-colors" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                     View All →
                 </a>
             </div>
             
-            @if($recentBookmarks->count() > 0)
+            <?php if($recentBookmarks->count() > 0): ?>
                 <div class="space-y-4">
-                    @foreach($recentBookmarks as $bookmark)
+                    <?php $__currentLoopData = $recentBookmarks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $bookmark): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="p-4 bg-gray-50 dark:!bg-bg-card-hover rounded-lg hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors">
                             <h3 class="font-semibold text-gray-900 dark:!text-white mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                <a href="{{ route('articles.show', $bookmark->article) }}" class="hover:text-accent transition-colors">
-                                    {{ $bookmark->article->title }}
+                                <a href="<?php echo e(route('articles.show', $bookmark->article)); ?>" class="hover:text-accent transition-colors">
+                                    <?php echo e($bookmark->article->title); ?>
+
                                 </a>
                             </h3>
-                            @if($bookmark->article->category)
+                            <?php if($bookmark->article->category): ?>
                                 <span class="px-2 py-0.5 bg-purple-100 text-purple-800 rounded text-xs dark:!bg-purple-900/20 dark:!text-purple-400">
-                                    {{ $bookmark->article->category->name }}
+                                    <?php echo e($bookmark->article->category->name); ?>
+
                                 </span>
-                            @endif
+                            <?php endif; ?>
                             <p class="text-xs text-gray-500 dark:!text-text-tertiary mt-2" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                Bookmarked {{ $bookmark->created_at->diffForHumans() }}
+                                Bookmarked <?php echo e($bookmark->created_at->diffForHumans()); ?>
+
                             </p>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @else
+            <?php else: ?>
                 <p class="text-gray-500 dark:!text-text-secondary text-center py-8" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
                     No bookmarks yet. Start bookmarking articles you like!
                 </p>
-            @endif
+            <?php endif; ?>
         </div>
 
         <!-- Recent Comments -->
@@ -187,29 +194,32 @@
                 </h2>
             </div>
             
-            @if($recentComments->count() > 0)
+            <?php if($recentComments->count() > 0): ?>
                 <div class="space-y-4">
-                    @foreach($recentComments as $comment)
+                    <?php $__currentLoopData = $recentComments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $comment): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="p-4 bg-gray-50 dark:!bg-bg-card-hover rounded-lg">
                             <h3 class="font-semibold text-gray-900 dark:!text-white mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                <a href="{{ route('articles.show', $comment->article) }}#comment-{{ $comment->id }}" class="hover:text-accent transition-colors">
-                                    {{ $comment->article->title }}
+                                <a href="<?php echo e(route('articles.show', $comment->article)); ?>#comment-<?php echo e($comment->id); ?>" class="hover:text-accent transition-colors">
+                                    <?php echo e($comment->article->title); ?>
+
                                 </a>
                             </h3>
                             <p class="text-sm text-gray-700 dark:!text-text-secondary mb-2 line-clamp-2" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                {{ Str::limit($comment->content, 100) }}
+                                <?php echo e(Str::limit($comment->content, 100)); ?>
+
                             </p>
                             <p class="text-xs text-gray-500 dark:!text-text-tertiary" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                {{ $comment->created_at->diffForHumans() }}
+                                <?php echo e($comment->created_at->diffForHumans()); ?>
+
                             </p>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @else
+            <?php else: ?>
                 <p class="text-gray-500 dark:!text-text-secondary text-center py-8" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
                     No comments yet. Start engaging with articles!
                 </p>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 
@@ -223,40 +233,43 @@
                 </h2>
             </div>
             
-            @if($recentReadingHistory->count() > 0)
+            <?php if($recentReadingHistory->count() > 0): ?>
                 <div class="space-y-4">
-                    @foreach($recentReadingHistory as $history)
+                    <?php $__currentLoopData = $recentReadingHistory; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $history): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="p-4 bg-gray-50 dark:!bg-bg-card-hover rounded-lg hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors">
                             <h3 class="font-semibold text-gray-900 dark:!text-white mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                <a href="{{ route('articles.show', $history->article) }}" class="hover:text-accent transition-colors">
-                                    {{ $history->article->title }}
+                                <a href="<?php echo e(route('articles.show', $history->article)); ?>" class="hover:text-accent transition-colors">
+                                    <?php echo e($history->article->title); ?>
+
                                 </a>
                             </h3>
                             <div class="flex items-center justify-between">
                                 <div>
-                                    @if($history->article->category)
+                                    <?php if($history->article->category): ?>
                                         <span class="px-2 py-0.5 bg-purple-100 text-purple-800 rounded text-xs dark:!bg-purple-900/20 dark:!text-purple-400">
-                                            {{ $history->article->category->name }}
+                                            <?php echo e($history->article->category->name); ?>
+
                                         </span>
-                                    @endif
-                                    @if($history->progress > 0)
+                                    <?php endif; ?>
+                                    <?php if($history->progress > 0): ?>
                                         <span class="ml-2 text-xs text-gray-500 dark:!text-text-tertiary">
-                                            {{ $history->progress }}% read
+                                            <?php echo e($history->progress); ?>% read
                                         </span>
-                                    @endif
+                                    <?php endif; ?>
                                 </div>
                                 <p class="text-xs text-gray-500 dark:!text-text-tertiary" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                    {{ $history->last_read_at->diffForHumans() }}
+                                    <?php echo e($history->last_read_at->diffForHumans()); ?>
+
                                 </p>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @else
+            <?php else: ?>
                 <p class="text-gray-500 dark:!text-text-secondary text-center py-8" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
                     No reading history yet.
                 </p>
-            @endif
+            <?php endif; ?>
         </div>
 
         <!-- Liked Articles -->
@@ -267,33 +280,38 @@
                 </h2>
             </div>
             
-            @if($likedArticles->count() > 0)
+            <?php if($likedArticles->count() > 0): ?>
                 <div class="space-y-4">
-                    @foreach($likedArticles as $like)
+                    <?php $__currentLoopData = $likedArticles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $like): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="p-4 bg-gray-50 dark:!bg-bg-card-hover rounded-lg hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors">
                             <h3 class="font-semibold text-gray-900 dark:!text-white mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                <a href="{{ route('articles.show', $like->article) }}" class="hover:text-accent transition-colors">
-                                    {{ $like->article->title }}
+                                <a href="<?php echo e(route('articles.show', $like->article)); ?>" class="hover:text-accent transition-colors">
+                                    <?php echo e($like->article->title); ?>
+
                                 </a>
                             </h3>
-                            @if($like->article->category)
+                            <?php if($like->article->category): ?>
                                 <span class="px-2 py-0.5 bg-purple-100 text-purple-800 rounded text-xs dark:!bg-purple-900/20 dark:!text-purple-400">
-                                    {{ $like->article->category->name }}
+                                    <?php echo e($like->article->category->name); ?>
+
                                 </span>
-                            @endif
+                            <?php endif; ?>
                             <p class="text-xs text-gray-500 dark:!text-text-tertiary mt-2" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                                Liked {{ $like->created_at->diffForHumans() }}
+                                Liked <?php echo e($like->created_at->diffForHumans()); ?>
+
                             </p>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
-            @else
+            <?php else: ?>
                 <p class="text-gray-500 dark:!text-text-secondary text-center py-8" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
                     No liked articles yet. Start liking articles you enjoy!
                 </p>
-            @endif
+            <?php endif; ?>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\asdfq\Desktop\Nazaarabox\resources\views/user/dashboard.blade.php ENDPATH**/ ?>

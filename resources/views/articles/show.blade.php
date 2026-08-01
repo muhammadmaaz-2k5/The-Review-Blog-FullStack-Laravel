@@ -195,17 +195,20 @@
                 <!-- Left Sidebar (Sticky Share) -->
                 <div class="hidden xl:block w-16 flex-shrink-0">
                     <div class="sticky top-32 flex flex-col gap-6">
-                        <!-- Like Button (Mini) -->
-                        <button id="likeButtonSidebar"
-                            class="w-12 h-12 rounded-full bg-white dark:!bg-bg-card border border-gray-200 dark:!border-border-secondary flex items-center justify-center text-gray-500 hover:text-red-500 hover:border-red-500 transition-all shadow-sm group"
-                            onclick="document.getElementById('likeButton').click()">
-                            <svg class="w-6 h-6 group-hover:fill-current transition-colors" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                                </path>
-                            </svg>
-                        </button>
+                        <!-- Like and Bookmark Buttons (Mini React roots) -->
+                        <div class="react-like-button-root"
+                             data-article-id="{{ $article->slug }}"
+                             data-is-liked="{{ $isLiked ?? false ? 'true' : 'false' }}"
+                             data-likes-count="{{ $article->likes()->count() }}"
+                             data-logged-in="{{ Auth::check() ? 'true' : 'false' }}"
+                             data-variant="sidebar">
+                        </div>
+                        <div class="react-bookmark-button-root"
+                             data-article-id="{{ $article->slug }}"
+                             data-is-bookmarked="{{ $isBookmarked ?? false ? 'true' : 'false' }}"
+                             data-logged-in="{{ Auth::check() ? 'true' : 'false' }}"
+                             data-variant="sidebar">
+                        </div>
 
                         <!-- Share Icons -->
                         <div class="w-12 h-[1px] bg-gray-200 dark:!bg-border-secondary mx-auto"></div>
@@ -372,42 +375,20 @@
                     <!-- Article Actions (Like & Bookmark Buttons) -->
                     <div
                         class="flex flex-wrap items-center gap-2 sm:gap-4 mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-gray-200 dark:!border-border-secondary">
-                        <div id="react-like-button-root"
+                        <div class="react-like-button-root"
                              data-article-id="{{ $article->slug }}"
                              data-is-liked="{{ $isLiked ?? false ? 'true' : 'false' }}"
                              data-likes-count="{{ $article->likes()->count() }}"
-                             data-logged-in="{{ Auth::check() ? 'true' : 'false' }}">
+                             data-logged-in="{{ Auth::check() ? 'true' : 'false' }}"
+                             data-variant="main">
                         </div>
 
-                        @auth
-                            <button id="bookmarkButton"
-                                class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all text-sm sm:text-base {{ $isBookmarked ?? false ? 'bg-yellow-100 text-yellow-600 dark:!bg-yellow-900/20 dark:!text-yellow-400' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:!bg-bg-card-hover dark:!text-white dark:!hover:bg-bg-card' }}"
-                                data-article-slug="{{ $article->slug }}"
-                                data-bookmarked="{{ $isBookmarked ?? false ? 'true' : 'false' }}">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="{{ $isBookmarked ?? false ? 'currentColor' : 'none' }}"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
-                                </svg>
-                                <span class="font-semibold" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                    <span
-                                        class="hidden sm:inline">{{ $isBookmarked ?? false ? 'Bookmarked' : 'Bookmark' }}</span>
-                                    <span class="sm:hidden">{{ $isBookmarked ?? false ? 'Saved' : 'Save' }}</span>
-                                </span>
-                            </button>
-                        @else
-                            <a href="{{ route('login') }}"
-                                class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-lg transition-all bg-gray-100 text-gray-700 hover:bg-gray-200 dark:!bg-bg-card-hover dark:!text-white dark:!hover:bg-bg-card text-sm sm:text-base">
-                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
-                                </svg>
-                                <span class="font-semibold" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                                    <span class="hidden sm:inline">Bookmark</span>
-                                    <span class="sm:hidden">Save</span>
-                                </span>
-                            </a>
-                        @endauth
+                        <div class="react-bookmark-button-root"
+                             data-article-id="{{ $article->slug }}"
+                             data-is-bookmarked="{{ $isBookmarked ?? false ? 'true' : 'false' }}"
+                             data-logged-in="{{ Auth::check() ? 'true' : 'false' }}"
+                             data-variant="main">
+                        </div>
                     </div>
 
                     <!-- Social Sharing Section -->
@@ -974,131 +955,7 @@
     @endif
 @push('scripts')
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Article Bookmark functionality
-            const bookmarkButton = document.getElementById('bookmarkButton');
-            if (bookmarkButton) {
-                bookmarkButton.addEventListener('click', function (e) {
-                    e.preventDefault();
 
-                    const articleSlug = this.getAttribute('data-article-slug');
-                    if (!articleSlug) {
-                        console.error('Article slug not found');
-                        alert('Failed to bookmark article. Article information is missing.');
-                        return;
-                    }
-
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
-                        document.querySelector('input[name="_token"]')?.value ||
-                        document.querySelector('input[name="csrf_token"]')?.value;
-
-                    if (!csrfToken) {
-                        console.error('CSRF token not found');
-                        alert('Security token missing. Please refresh the page and try again.');
-                        return;
-                    }
-
-                    // Disable button during request
-                    this.disabled = true;
-
-                    // Create form data for POST request
-                    const formData = new FormData();
-                    formData.append('_token', csrfToken);
-
-                    // Construct the bookmark URL using article slug (route model binding uses slug)
-                    const bookmarkUrl = `/articles/${articleSlug}/bookmark`;
-
-                    fetch(bookmarkUrl, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                    })
-                        .then(response => {
-                            // Handle authentication errors
-                            if (response.status === 401) {
-                                return response.json().then(err => {
-                                    alert(err.message || 'You must be logged in to bookmark articles.');
-                                    window.location.href = '{{ route("login") }}';
-                                    throw new Error('Unauthorized');
-                                });
-                            }
-
-                            // Handle 404 errors
-                            if (response.status === 404) {
-                                console.error('Bookmark route not found:', bookmarkUrl);
-                                alert('Bookmark feature is not available. Please try again later.');
-                                throw new Error('Route not found');
-                            }
-
-                            if (!response.ok) {
-                                // Try to parse error response
-                                return response.text().then(text => {
-                                    let errorData;
-                                    try {
-                                        errorData = JSON.parse(text);
-                                    } catch (e) {
-                                        errorData = { message: text || 'Failed to bookmark article' };
-                                    }
-                                    console.error('Server error response:', errorData);
-                                    throw new Error(errorData.message || errorData.error || 'Failed to bookmark article');
-                                });
-                            }
-
-                            return response.json();
-                        })
-                        .then(data => {
-                            this.disabled = false;
-
-                            if (data.success) {
-                                // Update button state
-                                const isBookmarked = data.bookmarked;
-                                this.setAttribute('data-bookmarked', isBookmarked ? 'true' : 'false');
-
-                                const buttonText = this.querySelector('span');
-                                const svg = this.querySelector('svg');
-
-                                if (isBookmarked) {
-                                    this.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200', 'dark:!bg-bg-card-hover', 'dark:!text-white', 'dark:!hover:bg-bg-card');
-                                    this.classList.add('bg-yellow-100', 'text-yellow-600', 'dark:!bg-yellow-900/20', 'dark:!text-yellow-400');
-                                    if (svg) svg.setAttribute('fill', 'currentColor');
-                                    if (buttonText) buttonText.textContent = 'Bookmarked';
-                                } else {
-                                    this.classList.remove('bg-yellow-100', 'text-yellow-600', 'dark:!bg-yellow-900/20', 'dark:!text-yellow-400');
-                                    this.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200', 'dark:!bg-bg-card-hover', 'dark:!text-white', 'dark:!hover:bg-bg-card');
-                                    if (svg) svg.setAttribute('fill', 'none');
-                                    if (buttonText) buttonText.textContent = 'Bookmark';
-                                }
-
-                                // Show message if available
-                                if (data.message) {
-                                    showMessage(data.message, 'success');
-                                }
-                            }
-                        })
-                        .catch(error => {
-                            this.disabled = false;
-                            console.error('Bookmark error:', error);
-                            console.error('Error details:', {
-                                message: error.message,
-                                stack: error.stack,
-                                bookmarkUrl: bookmarkUrl,
-                                articleSlug: articleSlug
-                            });
-
-                            // Don't show alert if it's already been shown (e.g., for 401 or 404)
-                            if (error.message !== 'Unauthorized' && error.message !== 'Route not found') {
-                                // Try to get more details from the error
-                                const errorMessage = error.message || 'Failed to bookmark article. Please try again.';
-                                alert(errorMessage);
-                            }
-                        });
-                });
-            }
-        });
 
         // Ensure images are responsive while preserving intended sizes
         document.addEventListener('DOMContentLoaded', function () {

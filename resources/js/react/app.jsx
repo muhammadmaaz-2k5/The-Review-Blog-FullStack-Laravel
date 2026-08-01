@@ -74,8 +74,10 @@ import FollowButton from './components/FollowButton';
 import LikeButton from './components/LikeButton';
 import BookmarkButton from './components/BookmarkButton';
 import Comments from './components/Comments';
+import SubmitTipForm from './components/SubmitTipForm';
+import BecomeAuthorCard from './components/BecomeAuthorCard';
 
-function ClerkApp({ signInMount, signUpMount, followButtonMount, likeButtonMounts, bookmarkButtonMounts, commentsMount }) {
+function ClerkApp({ signInMount, signUpMount, followButtonMount, likeButtonMounts, bookmarkButtonMounts, commentsMount, submitTipMount, becomeAuthorMount }) {
     // If we are on the login or register page, we shouldn't mount the component 
     // if the user is already signed in and synced with Laravel, because they would be redirected.
     // However, if they are NOT synced, ClerkSync will handle the sync and redirect.
@@ -140,6 +142,23 @@ function ClerkApp({ signInMount, signUpMount, followButtonMount, likeButtonMount
                 />,
                 commentsMount
             )}
+            {submitTipMount && createPortal(
+                <SubmitTipForm 
+                    initialCaptchaQuestion={submitTipMount.dataset.captchaQuestion}
+                    csrfToken={submitTipMount.dataset.csrfToken}
+                />,
+                submitTipMount
+            )}
+            {becomeAuthorMount && createPortal(
+                <BecomeAuthorCard 
+                    csrfToken={becomeAuthorMount.dataset.csrfToken}
+                    initialStatus={becomeAuthorMount.dataset.status}
+                    initialMessage={becomeAuthorMount.dataset.message}
+                    initialAdminNotes={becomeAuthorMount.dataset.adminNotes}
+                    initialSubmittedDate={becomeAuthorMount.dataset.submittedDate}
+                />,
+                becomeAuthorMount
+            )}
         </ClerkProvider>
     );
 }
@@ -151,6 +170,8 @@ const mountReactApp = () => {
     const likeButtonMounts = document.querySelectorAll('.react-like-button-root');
     const bookmarkButtonMounts = document.querySelectorAll('.react-bookmark-button-root');
     const commentsMount = document.getElementById('react-comments-root');
+    const submitTipMount = document.getElementById('react-submit-tip-root');
+    const becomeAuthorMount = document.getElementById('react-become-author-root');
 
     let appRoot = document.getElementById('clerk-react-app-root');
     if (!appRoot) {
@@ -168,6 +189,8 @@ const mountReactApp = () => {
             likeButtonMounts={likeButtonMounts.length > 0 ? likeButtonMounts : null}
             bookmarkButtonMounts={bookmarkButtonMounts.length > 0 ? bookmarkButtonMounts : null}
             commentsMount={commentsMount}
+            submitTipMount={submitTipMount}
+            becomeAuthorMount={becomeAuthorMount}
         />
     );
 };

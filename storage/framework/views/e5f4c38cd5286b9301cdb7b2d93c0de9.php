@@ -1,8 +1,8 @@
-@extends('layouts.app')
 
-@section('title', 'Send a Tip - ' . config('app.name'))
 
-@section('content')
+<?php $__env->startSection('title', 'Send a Tip - ' . config('app.name')); ?>
+
+<?php $__env->startSection('content'); ?>
 <div class="relative min-h-screen bg-[#141414] text-white overflow-hidden flex flex-col justify-center py-16">
     <!-- Background Effects -->
     <div class="absolute inset-0 z-0">
@@ -89,12 +89,13 @@
                     </div>
 
                     <div id="react-submit-tip-root" 
-                         data-captcha-question="{{ $captchaQuestion ?? '42 = ?' }}" 
-                         data-csrf-token="{{ csrf_token() }}">
+                         data-captcha-question="<?php echo e($captchaQuestion ?? '42 = ?'); ?>" 
+                         data-csrf-token="<?php echo e(csrf_token()); ?>">
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\asdfq\Desktop\Nazaarabox\resources\views/tips/create.blade.php ENDPATH**/ ?>

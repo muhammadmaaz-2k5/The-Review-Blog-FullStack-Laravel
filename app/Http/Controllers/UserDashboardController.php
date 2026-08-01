@@ -95,6 +95,9 @@ class UserDashboardController extends Controller
         
         // Check if user is already an author
         if ($user->isAuthor()) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'You are already an author!'], 400);
+            }
             return redirect()->route('user.dashboard')
                 ->with('error', 'You are already an author!');
         }
@@ -105,6 +108,9 @@ class UserDashboardController extends Controller
             ->first();
         
         if ($pendingRequest) {
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'You already have a pending author request. Please wait for admin approval.'], 400);
+            }
             return redirect()->route('user.dashboard')
                 ->with('error', 'You already have a pending author request. Please wait for admin approval.');
         }
@@ -120,6 +126,13 @@ class UserDashboardController extends Controller
             'message' => $validated['message'] ?? null,
             'status' => 'pending',
         ]);
+        
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true, 
+                'message' => 'Your author request has been submitted successfully! We will review it and get back to you soon.'
+            ]);
+        }
         
         return redirect()->route('user.dashboard')
             ->with('success', 'Your author request has been submitted successfully! We will review it and get back to you soon.');

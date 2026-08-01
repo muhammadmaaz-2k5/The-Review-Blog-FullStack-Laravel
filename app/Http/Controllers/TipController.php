@@ -35,6 +35,12 @@ class TipController extends Controller
         // Validate CAPTCHA (answer should be 42 for "forty-two")
         $correctAnswer = Session::get('tip_captcha_answer');
         if (!$correctAnswer || (int)$request->captcha_answer !== (int)$correctAnswer) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'message' => 'The given data was invalid.',
+                    'errors' => ['captcha_answer' => ['CAPTCHA answer is incorrect. Please try again.']]
+                ], 422);
+            }
             return back()->withErrors(['captcha_answer' => 'CAPTCHA answer is incorrect. Please try again.'])->withInput();
         }
 
@@ -62,6 +68,13 @@ class TipController extends Controller
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Thank you for your tip! We will review it and get back to you if needed.'
+            ]);
+        }
 
         return redirect()->route('tips.create')->with('success', 'Thank you for your tip! We will review it and get back to you if needed.');
     }
