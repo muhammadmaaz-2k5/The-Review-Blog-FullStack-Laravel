@@ -8,10 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class FollowController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
+    // Constructor removed since auth middleware is applied in routes/web.php
 
     /**
      * Follow a user

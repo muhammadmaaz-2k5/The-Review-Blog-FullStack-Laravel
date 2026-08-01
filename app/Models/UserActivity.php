@@ -15,6 +15,7 @@ class UserActivity extends Model
         'subject_id',
         'subject_type',
         'metadata',
+        'created_at',
     ];
 
     protected $casts = [

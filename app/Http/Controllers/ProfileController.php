@@ -60,8 +60,7 @@ class ProfileController extends Controller
             ->where('status', 'published')
             ->with(['category', 'tags'])
             ->orderBy('published_at', 'desc')
-            ->limit(6)
-            ->get();
+            ->paginate(6);
 
         // Get popular articles
         $popularArticles = Article::where('author_id', $user->id)
@@ -181,6 +180,42 @@ class ProfileController extends Controller
             'user' => $user,
             'articles' => $articles,
             'seo' => $this->seoService->forProfile($user),
+        ]);
+    }
+
+    public function loadMore($username, Request $request)
+    {
+        if (!$request->ajax()) {
+            return response()->json(['error' => 'Invalid request'], 400);
+        }
+
+        $user = User::where('username', $username)
+            ->orWhere('id', $username)
+            ->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Check privacy
+        if (!$user->profile_public && (!Auth::check() || Auth::id() !== $user->id)) {
+            return response()->json(['error' => 'Private profile'], 403);
+        }
+
+        $articles = Article::where('author_id', $user->id)
+            ->where('status', 'published')
+            ->with(['category', 'tags'])
+            ->orderBy('published_at', 'desc')
+            ->paginate(6);
+
+        $html = '';
+        foreach ($articles as $article) {
+            $html .= view('profile._article_card', compact('article'))->render();
+        }
+
+        return response()->json([
+            'html' => $html,
+            'hasMore' => $articles->hasMorePages()
         ]);
     }
 }

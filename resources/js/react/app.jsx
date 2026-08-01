@@ -70,7 +70,9 @@ function ClerkSync() {
     return null;
 }
 
-function ClerkApp({ signInMount, signUpMount }) {
+import FollowButton from './components/FollowButton';
+
+function ClerkApp({ signInMount, signUpMount, followButtonMount }) {
     // If we are on the login or register page, we shouldn't mount the component 
     // if the user is already signed in and synced with Laravel, because they would be redirected.
     // However, if they are NOT synced, ClerkSync will handle the sync and redirect.
@@ -95,6 +97,14 @@ function ClerkApp({ signInMount, signUpMount }) {
                 />,
                 signUpMount
             )}
+            {followButtonMount && createPortal(
+                <FollowButton 
+                    userId={followButtonMount.dataset.userId}
+                    initialIsFollowing={followButtonMount.dataset.following}
+                    isLoggedIn={followButtonMount.dataset.loggedIn === 'true'}
+                />,
+                followButtonMount
+            )}
         </ClerkProvider>
     );
 }
@@ -102,6 +112,7 @@ function ClerkApp({ signInMount, signUpMount }) {
 const mountReactApp = () => {
     const signInMount = document.getElementById('react-clerk-sign-in');
     const signUpMount = document.getElementById('react-clerk-sign-up');
+    const followButtonMount = document.getElementById('react-follow-button-root');
 
     let appRoot = document.getElementById('clerk-react-app-root');
     if (!appRoot) {
@@ -111,7 +122,7 @@ const mountReactApp = () => {
     }
 
     const root = createRoot(appRoot);
-    root.render(<ClerkApp signInMount={signInMount} signUpMount={signUpMount} />);
+    root.render(<ClerkApp signInMount={signInMount} signUpMount={signUpMount} followButtonMount={followButtonMount} />);
 };
 
 if (document.readyState === 'loading') {

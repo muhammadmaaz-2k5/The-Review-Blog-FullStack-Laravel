@@ -204,6 +204,7 @@ Route::get('/api/categories/{slug}/load-more', [CategoryController::class, 'load
 Route::get('/api/tags/{slug}/load-more', [TagController::class, 'loadMore'])->name('tags.load-more');
 Route::get('/api/search/load-more', [SearchController::class, 'loadMore'])->name('search.load-more');
 Route::get('/api/articles-index/load-more', [ArticleController::class, 'loadMore'])->name('articles-index.load-more');
+Route::get('/api/profile/{username}/load-more', [ProfileController::class, 'loadMore'])->name('profile.load-more');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
