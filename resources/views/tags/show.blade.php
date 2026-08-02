@@ -398,7 +398,7 @@
                                 @if($featured->featured_image)
                                     <img src="{{ $featured->featured_image_url }}" alt="{{ $featured->title }}">
                                 @else
-                                    <div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">NC</div>
+                                    <img src="{{ asset('article_image_notfound.png') }}" alt="{{ $featured->title }}" class="w-full h-full object-cover">
                                 @endif
                             </a>
                             <div class="sidebar-content">

@@ -31,6 +31,7 @@ class Article extends Model
         'title',
         'slug',
         'excerpt',
+        'quick_answer',
         'content',
         'featured_image',
         'featured_image_alt',

@@ -50,7 +50,7 @@
                                      alt="{{ $bookmark->article->featured_image_alt ?: $bookmark->article->title }}" 
                                      title="{{ $bookmark->article->featured_image_title ?: $bookmark->article->title }}"
                                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                                     onerror="this.src='https://via.placeholder.com/400x250?text=No+Image'">
+                                     onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}'">
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800">
                                     <svg class="w-16 h-16 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,6 +1,6 @@
 <a href="{{ route('articles.show', $article->slug) }}" class="group relative bg-[#1a1a1a] rounded-2xl overflow-hidden border border-white/5 hover:border-white/10 transition-all hover:-translate-y-1 hover:shadow-2xl hover:shadow-accent/5">
     <div class="aspect-video relative overflow-hidden">
-        <img src="{{ $article->featured_image_url }}" alt="{{ $article->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+        <img src="{{ $article->featured_image_url }}" alt="{{ $article->title }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}';">
         <div class="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] to-transparent opacity-80"></div>
         <div class="absolute top-3 left-3">
             <span class="px-2 py-1 bg-accent text-white text-[10px] font-bold uppercase rounded shadow-lg">

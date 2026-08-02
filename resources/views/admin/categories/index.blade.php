@@ -62,7 +62,7 @@
                                     ? $category->image 
                                     : asset('storage/' . $category->image);
                             @endphp
-                            <img src="{{ $imageUrl }}" alt="{{ $category->name }}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/100?text=No+Image'">
+                            <img src="{{ $imageUrl }}" alt="{{ $category->name }}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}'">
                         </div>
                     @endif
                 </div>

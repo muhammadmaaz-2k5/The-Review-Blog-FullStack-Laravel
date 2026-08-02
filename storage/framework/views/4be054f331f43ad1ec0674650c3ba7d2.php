@@ -8,10 +8,75 @@
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     
     
+    <!-- AI/GEO SEO: Structured Data -->
+    <script type="application/ld+json">
+    <?php echo json_encode([
+        '<?php $__contextArgs = [];
+if (context()->has($__contextArgs[0])) :
+if (isset($value)) { $__contextPrevious[] = $value; }
+$value = context()->get($__contextArgs[0]); ?>' => 'https://schema.org',
+        '@type' => 'BlogPosting',
+        'headline' => $article->title,
+        'description' => $article->excerpt ?? Str::limit(strip_tags($article->content), 150),
+        'image' => $article->featured_image ? url($article->featured_image) : null,
+        'datePublished' => $article->published_at?->toIso8601String(),
+        'dateModified' => $article->updated_at?->toIso8601String(),
+        'author' => [
+            '@type' => 'Person',
+            'name' => $article->author->name,
+            'url' => route('profile.show', $article->author->username),
+        ],
+        'publisher' => [
+            '@type' => 'Organization',
+            'name' => config('app.name'),
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => url('/logo.png')
+            ]
+        ],
+        'mainEntityOfPage' => [
+            '@type' => 'WebPage',
+            '@id' => url()->current(),
+        ],
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>
+
+    </script>
+
+    <!-- Topical Authority: BreadcrumbList Schema -->
+    <script type="application/ld+json">
+    <?php echo json_encode([
+        '<?php $__contextArgs = [];
+if (context()->has($__contextArgs[0])) :
+if (isset($value)) { $__contextPrevious[] = $value; }
+$value = context()->get($__contextArgs[0]); ?>' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            [
+                '@type' => 'ListItem',
+                'position' => 1,
+                'name' => 'Home',
+                'item' => route('home')
+            ],
+            [
+                '@type' => 'ListItem',
+                'position' => 2,
+                'name' => $article->category->name ?? 'Articles',
+                'item' => $article->category ? route('categories.show', $article->category->slug) : route('articles.index')
+            ],
+            [
+                '@type' => 'ListItem',
+                'position' => 3,
+                'name' => $article->title,
+                'item' => url()->current()
+            ]
+        ]
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>
+
+    </script>
 <?php $__env->stopPush(); ?>
 
 <?php $__env->startSection('content'); ?>
-    <!-- Table of Contents Extraction -->
+    <!-- Table of Contents Extraction & Inline Related Links -->
     <?php
         $headings = [];
         // Decode HTML entities (important if content comes from an editor like TinyMCE)
@@ -24,6 +89,25 @@
                     'text' => strip_tags($match),
                     'level' => intval($matches[1][$index]) // h2, h3, etc.
                 ];
+            }
+        }
+        
+        // Inject Inline Related Article
+        $finalContent = $article->rendered_content;
+        if (isset($relatedArticles) && $relatedArticles->count() > 0) {
+            try {
+                $inlineRelatedHtml = \Illuminate\Support\Facades\View::make('articles.partials.inline-related', ['relatedArticle' => $relatedArticles->first()])->render();
+                
+                // Split content by paragraphs
+                $paragraphs = explode('</p>', $finalContent);
+                if (count($paragraphs) > 4) {
+                    $halfwayIndex = floor(count($paragraphs) / 2);
+                    array_splice($paragraphs, $halfwayIndex, 0, $inlineRelatedHtml);
+                    $finalContent = implode('</p>', $paragraphs);
+                }
+            } catch (\Exception $e) {
+                // Fallback to original content if injection fails
+                $finalContent = $article->rendered_content;
             }
         }
     ?>
@@ -145,7 +229,7 @@
 
                                     </div>
                                 <?php endif; ?>
-                                <div class="absolute -bottom-1 -right-1 bg-white text-accent rounded-full p-0.5 shadow-sm">
+                                <div class="absolute -bottom-1 -right-1 bg-white text-accent rounded-full p-0.5 shadow-sm" title="Verified Author">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
                                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -155,20 +239,34 @@
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-0.5">Written By</span>
-                                <span
-                                    class="font-bold text-lg group-hover:text-accent transition-colors"><?php echo e($article->author->name); ?></span>
+                                <span class="font-bold text-lg group-hover:text-accent transition-colors"><?php echo e($article->author->name); ?></span>
                             </div>
                         </div>
                     <?php endif; ?>
+
+                    <!-- Editorial Trust Badge -->
+                    <div class="hidden sm:flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/20">
+                        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        <span class="text-xs font-semibold uppercase tracking-wider text-green-50">Fact Checked</span>
+                    </div>
 
                     <div class="hidden md:block w-px h-10 bg-white/20"></div>
 
                     <div class="flex items-center gap-6">
                         <div class="flex flex-col">
                             <span class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-0.5">Published</span>
-                            <span
-                                class="font-bold text-lg"><?php echo e($article->published_at?->format('M d, Y') ?? 'Draft'); ?></span>
+                            <span class="font-bold text-lg"><?php echo e($article->published_at?->format('M d, Y') ?? 'Draft'); ?></span>
                         </div>
+
+                        <?php if($article->updated_at && $article->published_at && $article->updated_at->diffInDays($article->published_at) > 1): ?>
+                            <div class="w-px h-10 bg-white/20"></div>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-0.5">Last Updated</span>
+                                <span class="font-bold text-lg"><?php echo e($article->updated_at->format('M d, Y')); ?></span>
+                            </div>
+                        <?php endif; ?>
 
                         <div class="w-px h-10 bg-white/20"></div>
 
@@ -238,6 +336,21 @@
 
                 <!-- Content Column -->
                 <div class="flex-1 min-w-0">
+                
+                    <?php if(!empty($article->quick_answer)): ?>
+                        <div class="quick-answer bg-purple-50 dark:!bg-purple-900/10 p-5 rounded-xl mb-8 border-l-4 border-accent shadow-sm">
+                            <h2 class="text-lg font-bold text-gray-900 dark:!text-white mb-2 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                                Quick Answer
+                            </h2>
+                            <p class="text-gray-700 dark:!text-text-secondary m-0 leading-relaxed font-medium">
+                                <?php echo e($article->quick_answer); ?>
+
+                            </p>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- Article Content -->
                     <div class="prose prose-lg dark:prose-invert max-w-none mb-8 article-content prose-headings:text-gray-900 prose-p:text-gray-700 prose-strong:text-gray-900 prose-a:text-accent prose-code:text-gray-900 prose-li:text-gray-700 prose-blockquote:text-gray-700 dark:prose-headings:!text-white dark:prose-p:!text-text-primary dark:prose-strong:!text-white dark:prose-a:!text-accent dark:prose-code:!text-white dark:prose-li:!text-text-primary dark:prose-blockquote:!text-text-primary 
@@ -261,7 +374,7 @@
 
                         <div
                             class="article-content space-y-6 [&_iframe]:w-full [&_iframe]:max-w-4xl [&_iframe]:aspect-video [&_iframe]:mx-auto [&_iframe]:rounded-xl [&_iframe]:shadow-lg [&_iframe]:my-6">
-                            <?php echo $article->rendered_content; ?>
+                            <?php echo $finalContent; ?>
 
                         </div>
                     </div>
@@ -625,6 +738,9 @@
 
 
                     
+                    <!-- Dynamic FAQs (AI/GEO SEO) -->
+                    <?php echo $__env->make('articles.partials.dynamic-faqs', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+
                     <!-- Comments Section -->
                     <div id="react-comments-root"
                          data-article-id="<?php echo e($article->slug); ?>"
@@ -855,7 +971,7 @@
                                         <img src="<?php echo e($relatedArticle->featured_image_url); ?>" alt="<?php echo e($relatedArticle->title); ?>"
                                             class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                     <?php else: ?>
-                                        <div class="w-full h-full bg-gray-200 dark:!bg-gray-800"></div>
+                                        <img src="<?php echo e(asset('article_image_notfound.png')); ?>" alt="<?php echo e($relatedArticle->title); ?>" class="w-full h-full object-cover">
                                     <?php endif; ?>
                                     <div
                                         class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-40 transition-opacity">

@@ -19,7 +19,7 @@
             </p>
         </div>
         <div class="flex gap-3">
-            <form action="{{ route('admin.authors.remove-status', $author) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to remove author status from this user?');">
+            <form action="{{ route('admin.authors.remove-status', $author->username ?? $author->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to remove author status from this user?');">
                 @csrf
                 @method('DELETE')
                 <button type="submit" 
@@ -125,7 +125,7 @@
         <h2 class="text-xl font-bold text-gray-900 dark:!text-white mb-4" style="font-family: 'Poppins', sans-serif; font-weight: 700;">
             Permissions
         </h2>
-        <form action="{{ route('admin.authors.update-permissions', $author) }}" method="POST">
+        <form action="{{ route('admin.authors.update-permissions', $author->username ?? $author->id) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Article Series - Nazaara Circle'); ?>
 
-@section('title', 'Article Series - Nazaara Circle')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <!-- Hero Section -->
 <div class="relative w-full h-[50vh] min-h-[400px] overflow-hidden">
     <div class="absolute inset-0 bg-gray-900">
@@ -16,9 +14,9 @@
     <div class="relative z-10 h-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
         <!-- Breadcrumbs -->
         <div class="mb-6">
-            @if(isset($seo['breadcrumbs']))
-                @include('layouts.partials.breadcrumbs', ['items' => $seo['breadcrumbs']])
-            @endif
+            <?php if(isset($seo['breadcrumbs'])): ?>
+                <?php echo $__env->make('layouts.partials.breadcrumbs', ['items' => $seo['breadcrumbs']], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php endif; ?>
         </div>
 
         <span class="text-accent font-bold tracking-[0.2em] uppercase text-sm mb-4 animate-fade-in-up">Curated Collections</span>
@@ -33,7 +31,7 @@
 
 <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <!-- Featured Series Section -->
-    @if($featuredSeries->count() > 0)
+    <?php if($featuredSeries->count() > 0): ?>
     <div class="mb-20">
         <div class="flex items-end justify-between mb-10">
             <div>
@@ -45,19 +43,19 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            @foreach($featuredSeries as $featured)
-                <a href="{{ route('series.show', $featured->slug) }}" class="group relative h-[400px] rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-accent/30">
+            <?php $__currentLoopData = $featuredSeries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $featured): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <a href="<?php echo e(route('series.show', $featured->slug)); ?>" class="group relative h-[400px] rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:shadow-accent/30">
                     <!-- Background Image -->
-                    @if($featured->featured_image)
-                        <img src="{{ $featured->featured_image_url }}" 
-                             alt="{{ $featured->featured_image_alt ?: $featured->title }}" 
+                    <?php if($featured->featured_image): ?>
+                        <img src="<?php echo e($featured->featured_image_url); ?>" 
+                             alt="<?php echo e($featured->featured_image_alt ?: $featured->title); ?>" 
                              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                             onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}';">
-                    @else
-                        <img src="{{ asset('article_image_notfound.png') }}" 
-                             alt="{{ $featured->title }}" 
+                             onerror="this.onerror=null;this.src='<?php echo e(asset('article_image_notfound.png')); ?>';">
+                    <?php else: ?>
+                        <img src="<?php echo e(asset('article_image_notfound.png')); ?>" 
+                             alt="<?php echo e($featured->title); ?>" 
                              class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    @endif
+                    <?php endif; ?>
                     
                     <!-- Gradient Overlay -->
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity"></div>
@@ -69,15 +67,17 @@
                                 Featured Series
                             </span>
                             <h3 class="text-3xl font-black text-white mb-3 leading-tight" style="font-family: 'Poppins', sans-serif;">
-                                {{ $featured->title }}
+                                <?php echo e($featured->title); ?>
+
                             </h3>
                             <p class="text-gray-300 text-sm line-clamp-2 mb-4 font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 h-0 group-hover:h-auto">
-                                {{ $featured->description }}
+                                <?php echo e($featured->description); ?>
+
                             </p>
                             <div class="flex items-center gap-4 text-xs font-bold text-gray-400 uppercase tracking-wide">
                                 <span class="flex items-center gap-1.5 text-white">
                                     <svg class="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                                    {{ number_format($featured->articles_count) }} Parts
+                                    <?php echo e(number_format($featured->articles_count)); ?> Parts
                                 </span>
                                 <span>•</span>
                                 <span class="group-hover:text-accent transition-colors">Start Reading →</span>
@@ -85,20 +85,20 @@
                         </div>
                     </div>
                 </a>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>
-    @endif
+    <?php endif; ?>
 
     <!-- Search and Filter Section -->
     <div class="relative md:sticky md:top-20 z-30 bg-white/80 dark:!bg-[#141414]/90 backdrop-blur-xl border border-gray-200 dark:!border-white/10 rounded-2xl p-4 mb-12 shadow-xl">
-        <form method="GET" action="{{ route('series.index') }}" class="flex flex-col md:flex-row gap-4">
+        <form method="GET" action="<?php echo e(route('series.index')); ?>" class="flex flex-col md:flex-row gap-4">
             <!-- Search -->
             <div class="flex-1 relative">
                 <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 <input type="text" 
                        name="search" 
-                       value="{{ $search }}" 
+                       value="<?php echo e($search); ?>" 
                        placeholder="Find a series..." 
                        class="w-full pl-12 pr-4 py-3 bg-gray-50 dark:!bg-white/5 border border-gray-200 dark:!border-white/10 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent dark:!text-white font-medium transition-all placeholder-gray-500"
                        style="font-family: 'Poppins', sans-serif;">
@@ -110,10 +110,10 @@
                         class="w-full px-4 py-3 bg-gray-50 dark:!bg-white/5 border border-gray-200 dark:!border-white/10 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent dark:!text-white font-medium cursor-pointer"
                         style="font-family: 'Poppins', sans-serif;"
                         onchange="this.form.submit()">
-                    <option value="sort_order" {{ $sort === 'sort_order' ? 'selected' : '' }}>Default Order</option>
-                    <option value="title" {{ $sort === 'title' ? 'selected' : '' }}>Title (A-Z)</option>
-                    <option value="articles" {{ $sort === 'articles' ? 'selected' : '' }}>Most Articles</option>
-                    <option value="latest" {{ $sort === 'latest' ? 'selected' : '' }}>Newest First</option>
+                    <option value="sort_order" <?php echo e($sort === 'sort_order' ? 'selected' : ''); ?>>Default Order</option>
+                    <option value="title" <?php echo e($sort === 'title' ? 'selected' : ''); ?>>Title (A-Z)</option>
+                    <option value="articles" <?php echo e($sort === 'articles' ? 'selected' : ''); ?>>Most Articles</option>
+                    <option value="latest" <?php echo e($sort === 'latest' ? 'selected' : ''); ?>>Newest First</option>
                 </select>
             </div>
             
@@ -123,8 +123,8 @@
                         class="w-full px-4 py-3 bg-gray-50 dark:!bg-white/5 border border-gray-200 dark:!border-white/10 rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent dark:!text-white font-medium cursor-pointer"
                         style="font-family: 'Poppins', sans-serif;"
                         onchange="this.form.submit()">
-                    <option value="asc" {{ $order === 'asc' ? 'selected' : '' }}>Ascending</option>
-                    <option value="desc" {{ $order === 'desc' ? 'selected' : '' }}>Descending</option>
+                    <option value="asc" <?php echo e($order === 'asc' ? 'selected' : ''); ?>>Ascending</option>
+                    <option value="desc" <?php echo e($order === 'desc' ? 'selected' : ''); ?>>Descending</option>
                 </select>
             </div>
             
@@ -134,20 +134,39 @@
                 Search
             </button>
             
-            @if($search)
-                <a href="{{ route('series.index') }}" 
+            <?php if($search): ?>
+                <a href="<?php echo e(route('series.index')); ?>" 
                    class="px-6 py-3 bg-gray-100 hover:bg-gray-200 dark:!bg-white/10 dark:!hover:bg-white/20 text-gray-700 dark:!text-white font-bold rounded-xl transition-all flex items-center justify-center">
                     ✕
                 </a>
-            @endif
+            <?php endif; ?>
         </form>
     </div>
 
     <!-- Series Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        @forelse($series as $ser)
-            <x-series-card :series="$ser" />
-        @empty
+        <?php $__empty_1 = true; $__currentLoopData = $series; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ser): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <?php if (isset($component)) { $__componentOriginal3510cb644451e877e48b9b5827ec9df0 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal3510cb644451e877e48b9b5827ec9df0 = $attributes; } ?>
+<?php $component = App\View\Components\SeriesCard::resolve(['series' => $ser] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('series-card'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\App\View\Components\SeriesCard::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal3510cb644451e877e48b9b5827ec9df0)): ?>
+<?php $attributes = $__attributesOriginal3510cb644451e877e48b9b5827ec9df0; ?>
+<?php unset($__attributesOriginal3510cb644451e877e48b9b5827ec9df0); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal3510cb644451e877e48b9b5827ec9df0)): ?>
+<?php $component = $__componentOriginal3510cb644451e877e48b9b5827ec9df0; ?>
+<?php unset($__componentOriginal3510cb644451e877e48b9b5827ec9df0); ?>
+<?php endif; ?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="col-span-full text-center py-24">
                 <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gray-100 dark:!bg-white/5 mb-6">
                     <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,7 +178,7 @@
                     We couldn't find any series matching your search. Try adjusting your filters.
                 </p>
             </div>
-        @endforelse
+        <?php endif; ?>
     </div>
 
     <!-- CTA Section -->
@@ -179,10 +198,12 @@
             <p class="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed max-w-2xl">
                 Can't decide what to read next? Our series are hand-picked collections designed to take you on a journey through the most captivating stories in entertainment.
             </p>
-            <a href="{{ route('login') }}" class="px-10 py-4 bg-accent text-white font-bold rounded-full hover:bg-red-700 transition-all shadow-lg hover:shadow-accent/50 text-lg uppercase tracking-wide">
+            <a href="<?php echo e(route('login')); ?>" class="px-10 py-4 bg-accent text-white font-bold rounded-full hover:bg-red-700 transition-all shadow-lg hover:shadow-accent/50 text-lg uppercase tracking-wide">
                 Start Your Journey
             </a>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\asdfq\Desktop\Nazaarabox\resources\views/series/index.blade.php ENDPATH**/ ?>

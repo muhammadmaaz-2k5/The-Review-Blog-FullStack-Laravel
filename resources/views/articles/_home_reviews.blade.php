@@ -2,9 +2,9 @@
     <a href="{{ route('articles.show', $article->slug) }}" class="ent-card">
         <div class="ent-thumb">
             @if($article->featured_image)
-                <img src="{{ $article->featured_image_url }}" alt="{{ $article->title }}" loading="lazy">
+                <img src="{{ $article->featured_image_url }}" alt="{{ $article->title }}" loading="lazy" onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}';">
             @else
-                <div class="placeholder-bg"></div>
+                <img src="{{ asset('article_image_notfound.png') }}" alt="{{ $article->title }}" loading="lazy">
             @endif
         </div>
         <div class="ent-content">

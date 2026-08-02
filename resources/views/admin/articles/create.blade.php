@@ -117,6 +117,17 @@
                                   placeholder="Short description of the article">{{ old('excerpt') }}</textarea>
                     </div>
 
+                    <!-- Quick Answer (GEO/AI SEO) -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:!text-white mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
+                            Quick Answer (GEO/AI SEO)
+                        </label>
+                        <textarea name="quick_answer" rows="3"
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent dark:!bg-bg-card-hover dark:!border-border-primary dark:!text-white"
+                                  placeholder="2-4 sentence definitive answer for AI search engines">{{ old('quick_answer') }}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">Directly answers the main question of the article for AI answer extraction.</p>
+                    </div>
+
                     <!-- Content -->
                     <div>
                         <div class="flex items-center justify-between mb-2">

@@ -100,7 +100,7 @@
                                     <div class="w-12 h-12 rounded overflow-hidden bg-gray-200 dark:!bg-gray-700 flex-shrink-0">
                                 <a href="{{ route('articles.show', $article->slug) }}" target="_blank">
                                     @if($article->featured_image)
-                                        <img src="{{ $article->featured_image_url }}" alt="{{ $article->title }}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/100?text=No+Image'">
+                                        <img src="{{ $article->featured_image_url }}" alt="{{ $article->title }}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}'">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
                                     @endif

@@ -112,86 +112,6 @@
                     All content published on Nazaara Circle must meet our high standards for quality, accuracy, and value.
                 </p>
                 <ul class="list-disc list-inside text-gray-700 dark:!text-text-secondary space-y-2 ml-4" style="font-weight: 400;">
-                    <li><strong>Accuracy:</strong> All factual claims must be verified and supported by reliable sources</li>
-                    <li><strong>Relevance:</strong> Content must be relevant to our entertainment-focused audience</li>
-                    <li><strong>Originality:</strong> Content should be original or provide unique insights and perspectives</li>
-                    <li><strong>Clarity:</strong> Articles must be well-written, clear, and accessible to our target audience</li>
-                    <li><strong>Value:</strong> Content must provide genuine value, whether educational, informative, or analytical</li>
-                    <li><strong>Timeliness:</strong> We prioritize current, relevant information and trends</li>
-                </ul>
-            </section>
-
-            <!-- Content Categories -->
-            <section class="border-t border-gray-200 dark:!border-border-secondary pt-6">
-                <h2 class="text-2xl font-bold text-gray-900 dark:!text-white mb-4" style="font-weight: 700;">
-                    Content Categories
-                </h2>
-                <p class="text-gray-700 dark:!text-text-secondary leading-relaxed mb-4" style="font-weight: 400;">
-                    We publish various types of content, each with specific editorial guidelines:
-                </p>
-                <div class="space-y-4">
-                    <div>
-                        <h3 class="font-semibold text-gray-900 dark:!text-white mb-2" style="font-weight: 600;">News & Updates</h3>
-                        <p class="text-gray-700 dark:!text-text-secondary text-sm" style="font-weight: 400;">
-                            Timely reporting on entertainment news, movie premieres, and industry developments. Must be factual, balanced, and sourced from credible outlets.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 dark:!text-white mb-2" style="font-weight: 600;">Biographies & Profiles</h3>
-                        <p class="text-gray-700 dark:!text-text-secondary text-sm" style="font-weight: 400;">
-                            Detailed accounts of celebrities' lives and careers. Information must be fact-checked against multiple reliable sources.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 dark:!text-white mb-2" style="font-weight: 600;">Explained & Analysis</h3>
-                        <p class="text-gray-700 dark:!text-text-secondary text-sm" style="font-weight: 400;">
-                            In-depth breakdowns of movie plots, TV series endings, and pop culture phenomena. Analysis should be insightful and clearly reasoned.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 dark:!text-white mb-2" style="font-weight: 600;">Opinion & Commentary</h3>
-                        <p class="text-gray-700 dark:!text-text-secondary text-sm" style="font-weight: 400;">
-                            Thoughtful analysis and opinion pieces on entertainment trends and industry issues. Must be clearly labeled as opinion and supported by reasoning.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900 dark:!text-white mb-2" style="font-weight: 600;">Research & Analysis</h3>
-                        <p class="text-gray-700 dark:!text-text-secondary text-sm" style="font-weight: 400;">
-                            Data-driven articles based on box office numbers, ratings analysis, or viewer surveys. Must include methodology and sources.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Editorial Process -->
-            <section class="border-t border-gray-200 dark:!border-border-secondary pt-6">
-                <h2 class="text-2xl font-bold text-gray-900 dark:!text-white mb-4" style="font-weight: 700;">
-                    Editorial Process
-                </h2>
-                <p class="text-gray-700 dark:!text-text-secondary leading-relaxed mb-4" style="font-weight: 400;">
-                    All content goes through a structured editorial process before publication:
-                </p>
-                <ol class="list-decimal list-inside text-gray-700 dark:!text-text-secondary space-y-3 ml-4" style="font-weight: 400;">
-                    <li><strong>Submission:</strong> Content is submitted by authors or assigned by editors</li>
-                    <li><strong>Initial Review:</strong> Editorial team reviews for basic quality, relevance, and adherence to guidelines</li>
-                    <li><strong>Fact-Checking:</strong> Factual claims are verified against reliable sources</li>
-                    <li><strong>Editing:</strong> Content is edited for clarity, grammar, style, and structure</li>
-                    <li><strong>Content Review:</strong> Content is reviewed by subject matter experts when necessary</li>
-                    <li><strong>Final Approval:</strong> Senior editors approve content for publication</li>
-                    <li><strong>Publication:</strong> Content is published with appropriate categorization and tagging</li>
-                    <li><strong>Post-Publication:</strong> Content is monitored for accuracy and updated as needed</li>
-                </ol>
-            </section>
-
-            <!-- Author Guidelines -->
-            <section class="border-t border-gray-200 dark:!border-border-secondary pt-6">
-                <h2 class="text-2xl font-bold text-gray-900 dark:!text-white mb-4" style="font-weight: 700;">
-                    Author Guidelines
-                </h2>
-                <p class="text-gray-700 dark:!text-text-secondary leading-relaxed mb-4" style="font-weight: 400;">
-                    Authors contributing to Nazaara Circle must adhere to the following guidelines:
-                </p>
-                <ul class="list-disc list-inside text-gray-700 dark:!text-text-secondary space-y-2 ml-4" style="font-weight: 400;">
                     <li>Maintain high standards of accuracy and fact-checking</li>
                     <li>Disclose any potential conflicts of interest</li>
                     <li>Properly cite and attribute all sources</li>
@@ -293,18 +213,7 @@
             </section>
         </div>
 
-        <!-- Who We Are Section -->
-        <div class="who-we-are">
-            <h2 class="who-title">Who We Are</h2>
-            <p class="who-text">
-                Nazaara Circle is your ultimate destination for everything entertainment. From the latest drama reviews and movie blockbusters to exclusive celebrity biographies and trending industry news, we bring the spotlight to you. Our team of passionate writers and critics is dedicated to delivering fresh, engaging, and honest content that keeps you connected to the pulse of the entertainment world.
-            </p>
-            <a href="{{ route('about') }}" class="who-btn">Read More About Us</a>
-        </div>
-    </div>
-</div>
-@endsection
-                <ul class="list-disc list-inside text-gray-700 dark:!text-text-secondary space-y-2 ml-4" style="font-weight: 400;">
+<ul class="list-disc list-inside text-gray-700 dark:!text-text-secondary space-y-2 ml-4" style="font-weight: 400;">
                     <li>Articles are reviewed periodically for accuracy and relevance</li>
                     <li>Outdated information is updated when new information becomes available</li>
                     <li>Significant updates are noted in the article</li>

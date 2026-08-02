@@ -283,7 +283,7 @@
                     <table class="w-full border-collapse border border-gray-200 dark:!border-border-primary">
                         <thead>
                             <tr class="bg-gray-100 dark:!bg-bg-card-hover">
-                                <th class="border border-gray-200 dark:!border-border-primary px-4 py-3 text-left font-semibold text-gray-900 dark:!text-white" style="font-weight: 600;">Complaint Type</th>
+                                <th class="border border-gray-200 dark:!border-border-primary px-4 py-3 text-left font-semibold text-gray-900 dark:!text-white" style="font-weight: 600;">Issue Type</th>
                                 <th class="border border-gray-200 dark:!border-border-primary px-4 py-3 text-left font-semibold text-gray-900 dark:!text-white" style="font-weight: 600;">Acknowledgment</th>
                                 <th class="border border-gray-200 dark:!border-border-primary px-4 py-3 text-left font-semibold text-gray-900 dark:!text-white" style="font-weight: 600;">Resolution Target</th>
                             </tr>
@@ -310,18 +310,7 @@
             </section>
         </div>
 
-        <!-- Who We Are Section -->
-        <div class="who-we-are">
-            <h2 class="who-title">Who We Are</h2>
-            <p class="who-text">
-                Nazaara Circle is your ultimate destination for everything entertainment. From the latest drama reviews and movie blockbusters to exclusive celebrity biographies and trending industry news, we bring the spotlight to you. Our team of passionate writers and critics is dedicated to delivering fresh, engaging, and honest content that keeps you connected to the pulse of the entertainment world.
-            </p>
-            <a href="{{ route('about') }}" class="who-btn">Read More About Us</a>
-        </div>
-    </div>
-</div>
-@endsection
-                                <th class="border border-gray-200 dark:!border-border-primary px-4 py-3 text-left font-semibold text-gray-900 dark:!text-white" style="font-weight: 600;">Acknowledgment</th>
+<th class="border border-gray-200 dark:!border-border-primary px-4 py-3 text-left font-semibold text-gray-900 dark:!text-white" style="font-weight: 600;">Acknowledgment</th>
                                 <th class="border border-gray-200 dark:!border-border-primary px-4 py-3 text-left font-semibold text-gray-900 dark:!text-white" style="font-weight: 600;">Resolution</th>
                             </tr>
                         </thead>

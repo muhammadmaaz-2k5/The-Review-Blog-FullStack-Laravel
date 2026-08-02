@@ -150,6 +150,7 @@ class ArticleController extends Controller
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:articles,slug',
             'excerpt' => 'nullable|string|max:500',
+            'quick_answer' => 'nullable|string|max:1000',
             'content' => 'required|string',
             'featured_image' => 'nullable|string|max:500',
             'featured_image_file' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,svg|max:10240',
@@ -258,6 +259,7 @@ class ArticleController extends Controller
         $validated = $request->validate([
             'title' => 'nullable|string|max:255',
             'excerpt' => 'nullable|string|max:500',
+            'quick_answer' => 'nullable|string|max:1000',
             'content' => 'nullable|string',
             'featured_image' => 'nullable|string|max:500',
             'featured_image_file' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,svg|max:10240',
@@ -347,6 +349,7 @@ class ArticleController extends Controller
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:articles,slug,' . $article->id,
             'excerpt' => 'nullable|string|max:500',
+            'quick_answer' => 'nullable|string|max:1000',
             'content' => 'required|string',
             'featured_image' => 'nullable|string|max:500',
             'featured_image_file' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp,svg|max:10240',

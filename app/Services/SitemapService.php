@@ -7,9 +7,6 @@ use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Series;
 use App\Models\User;
-use App\Models\Game;
-use App\Models\Application;
-use App\Models\Tool;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
@@ -36,9 +33,6 @@ class SitemapService
             return [
                 'pages' => $this->getStaticPages(),
                 'articles' => $this->getArticlesUrls(),
-                'games' => $this->getGamesUrls(),
-                'applications' => $this->getApplicationsUrls(),
-                'tools' => $this->getToolsUrls(),
                 'categories' => $this->getCategoriesUrls(),
                 'tags' => $this->getTagsUrls(),
                 'series' => $this->getSeriesUrls(),
@@ -63,24 +57,6 @@ class SitemapService
             [
                 'loc' => route('articles.index'),
                 'lastmod' => $this->getArticlesLastModified(),
-                'changefreq' => 'daily',
-                'priority' => '0.9',
-            ],
-            [
-                'loc' => route('games.index'),
-                'lastmod' => $this->getGamesLastModified(),
-                'changefreq' => 'daily',
-                'priority' => '0.9',
-            ],
-            [
-                'loc' => route('applications.index'),
-                'lastmod' => $this->getApplicationsLastModified(),
-                'changefreq' => 'daily',
-                'priority' => '0.9',
-            ],
-            [
-                'loc' => route('tools.index'),
-                'lastmod' => $this->getToolsLastModified(),
                 'changefreq' => 'daily',
                 'priority' => '0.9',
             ],
@@ -138,8 +114,11 @@ class SitemapService
     public function getArticlesUrls(): array
     {
         return Cache::remember('sitemap_articles_urls', $this->cacheDuration, function () {
-        $articles = Article::published()
-            ->whereNotNull('slug')
+            $urls = [];
+            $count = 0;
+
+            Article::published()
+                ->whereNotNull('slug')
                 ->select([
                     'id', 
                     'slug', 
@@ -154,97 +133,29 @@ class SitemapService
                     'is_featured', 
                     'views'
                 ])
-            ->orderBy('updated_at', 'desc')
-            ->limit(10000)
-            ->get();
+                ->orderBy('updated_at', 'desc')
+                ->chunk(500, function ($articles) use (&$urls, &$count) {
+                    foreach ($articles as $article) {
+                        if ($count >= 10000) {
+                            return false; // Break out of chunking loop
+                        }
 
-        $urls = [];
-        foreach ($articles as $article) {
-            $urls[] = [
-                'loc' => route('articles.show', $article->slug),
-                'lastmod' => $this->formatDate($article->updated_at),
-                'changefreq' => $this->getArticleChangeFreq($article),
-                'priority' => $this->getArticlePriority($article),
-                'images' => $this->getArticleImages($article),
-                'videos' => $this->getArticleVideos($article),
-            ];
-        }
+                        $urls[] = [
+                            'loc' => route('articles.show', $article->slug),
+                            'lastmod' => $this->formatDate($article->updated_at),
+                            'changefreq' => $this->getArticleChangeFreq($article),
+                            'priority' => $this->getArticlePriority($article),
+                            'images' => $this->getArticleImages($article),
+                            'videos' => $this->getArticleVideos($article),
+                        ];
+                        
+                        $count++;
+                    }
+                });
 
             // Check URL limit
             $this->checkUrlLimit($urls, 'articles');
 
-        return $urls;
-        });
-    }
-
-    /**
-     * Get all game URLs
-     */
-    public function getGamesUrls(): array
-    {
-        return Cache::remember('sitemap_games_urls', $this->cacheDuration, function () {
-            $games = Game::where('status', 'published')
-                ->whereNotNull('slug')
-                ->orderBy('updated_at', 'desc')
-                ->get();
-
-            $urls = [];
-            foreach ($games as $game) {
-                $urls[] = [
-                    'loc' => route('games.show', $game->slug),
-                    'lastmod' => $this->formatDate($game->updated_at),
-                    'changefreq' => 'weekly',
-                    'priority' => '0.8',
-                ];
-            }
-            return $urls;
-        });
-    }
-
-    /**
-     * Get all application URLs
-     */
-    public function getApplicationsUrls(): array
-    {
-        return Cache::remember('sitemap_applications_urls', $this->cacheDuration, function () {
-            $applications = Application::where('status', 'published')
-                ->whereNotNull('slug')
-                ->orderBy('updated_at', 'desc')
-                ->get();
-
-            $urls = [];
-            foreach ($applications as $application) {
-                $urls[] = [
-                    'loc' => route('applications.show', $application->slug),
-                    'lastmod' => $this->formatDate($application->updated_at),
-                    'changefreq' => 'weekly',
-                    'priority' => '0.8',
-                ];
-            }
-            return $urls;
-        });
-    }
-
-    /**
-     * Get all tool URLs
-     */
-    public function getToolsUrls(): array
-    {
-        return Cache::remember('sitemap_tools_urls', $this->cacheDuration, function () {
-            $tools = Tool::where('status', 'published')
-                ->whereNotNull('slug')
-                ->orderBy('updated_at', 'desc')
-                ->get();
-
-            $urls = [];
-            foreach ($tools as $tool) {
-                $urls[] = [
-                    'loc' => route('tools.show', $tool->slug),
-                    'lastmod' => $this->formatDate($tool->updated_at),
-                    'changefreq' => 'weekly',
-                    'priority' => '0.8',
-                ];
-            }
             return $urls;
         });
     }
@@ -374,18 +285,6 @@ class SitemapService
                 'lastmod' => $this->getArticlesLastModified(),
             ],
             [
-                'loc' => route('sitemap.games'),
-                'lastmod' => $this->getGamesLastModified(),
-            ],
-            [
-                'loc' => route('sitemap.applications'),
-                'lastmod' => $this->getApplicationsLastModified(),
-            ],
-            [
-                'loc' => route('sitemap.tools'),
-                'lastmod' => $this->getToolsLastModified(),
-            ],
-            [
                 'loc' => route('sitemap.categories'),
                 'lastmod' => $this->getCategoriesLastModified(),
             ],
@@ -503,9 +402,6 @@ class SitemapService
             'home' => $this->getHomePageUrls(),
             'pages', 'static' => $this->getStaticPages(), // Support both for backward compatibility
             'articles' => $this->getArticlesUrls(),
-            'games' => $this->getGamesUrls(),
-            'applications' => $this->getApplicationsUrls(),
-            'tools' => $this->getToolsUrls(),
             'categories' => $this->getCategoriesUrls(),
             'tags' => $this->getTagsUrls(),
             'series' => $this->getSeriesUrls(),
@@ -523,9 +419,6 @@ class SitemapService
         return array_merge(
             $all['pages'],
             $all['articles'],
-            $all['games'],
-            $all['applications'],
-            $all['tools'],
             $all['categories'],
             $all['tags'],
             $all['series'],
@@ -631,42 +524,6 @@ class SitemapService
     protected function getArticlesLastModified(): string
     {
         $latest = Article::published()
-            ->orderBy('updated_at', 'desc')
-            ->first();
-        
-        return $latest ? $this->formatDate($latest->updated_at) : $this->getSiteLastModified();
-    }
-
-    /**
-     * Get games last modified date
-     */
-    protected function getGamesLastModified(): string
-    {
-        $latest = Game::where('status', 'published')
-            ->orderBy('updated_at', 'desc')
-            ->first();
-        
-        return $latest ? $this->formatDate($latest->updated_at) : $this->getSiteLastModified();
-    }
-
-    /**
-     * Get applications last modified date
-     */
-    protected function getApplicationsLastModified(): string
-    {
-        $latest = Application::where('status', 'published')
-            ->orderBy('updated_at', 'desc')
-            ->first();
-        
-        return $latest ? $this->formatDate($latest->updated_at) : $this->getSiteLastModified();
-    }
-
-    /**
-     * Get tools last modified date
-     */
-    protected function getToolsLastModified(): string
-    {
-        $latest = Tool::where('status', 'published')
             ->orderBy('updated_at', 'desc')
             ->first();
         

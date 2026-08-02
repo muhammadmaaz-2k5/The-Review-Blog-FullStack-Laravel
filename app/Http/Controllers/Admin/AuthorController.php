@@ -124,13 +124,15 @@ class AuthorController extends Controller
     public function updatePermissions(Request $request, User $author)
     {
         $validated = $request->validate([
-            'is_author' => 'required|boolean',
             'role' => 'required|string|in:user,author,admin',
         ]);
 
-        $author->update($validated);
+        $author->update([
+            'is_author' => $request->boolean('is_author'),
+            'role' => $validated['role'],
+        ]);
 
-        return redirect()->route('admin.authors.show', $author)
+        return redirect()->route('admin.authors.show', $author->username ?? $author->id)
             ->with('success', 'Author permissions updated successfully.');
     }
 

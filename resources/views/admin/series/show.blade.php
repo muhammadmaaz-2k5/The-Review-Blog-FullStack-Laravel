@@ -49,7 +49,7 @@
                     <h2 class="text-xl font-bold text-gray-900 dark:!text-white mb-4" style="font-family: 'Poppins', sans-serif; font-weight: 700;">
                         Featured Image
                     </h2>
-                    <img src="{{ $series->featured_image_url }}" alt="{{ $series->title }}" class="w-full rounded-lg" onerror="this.src='https://via.placeholder.com/800x400?text=No+Image'">
+                    <img src="{{ $series->featured_image_url }}" alt="{{ $series->title }}" class="w-full rounded-lg" onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}'">
                 </div>
             @endif
 

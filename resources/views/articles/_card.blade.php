@@ -11,13 +11,11 @@
                      loading="lazy"
                      decoding="async"
                      fetchpriority="low"
-                     onerror="this.src='https://via.placeholder.com/800x450?text=No+Image'">
+                     onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}'">
             @else
-                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-300 to-gray-400 dark:from-gray-700 dark:to-gray-800" style="min-height: 200px;">
-                    <svg class="w-16 h-16 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                </div>
+                <img src="{{ asset('article_image_notfound.png') }}" 
+                     alt="{{ $article->title }}" 
+                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
             @endif
             
             <!-- Category Badge -->

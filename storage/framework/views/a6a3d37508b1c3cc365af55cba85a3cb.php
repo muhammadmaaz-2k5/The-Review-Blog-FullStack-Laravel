@@ -1909,6 +1909,14 @@
                 </ul>
                 <div class="flex items-center gap-2 sm:gap-4">
                     <?php if(auth()->guard()->check()): ?>
+                        <?php if(auth()->user()->isAuthor()): ?>
+                            <a href="<?php echo e(route('admin.articles.create')); ?>" class="hidden md:flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-accent hover:bg-accent-light text-white font-bold rounded-lg transition-colors shadow-lg hover:shadow-accent/40 text-xs sm:text-sm" style="font-family: 'Poppins', sans-serif;">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                POST ARTICLE
+                            </a>
+                        <?php endif; ?>
                         <!-- User Dropdown - Desktop -->
                         <div class="relative hidden md:block" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-all dark:!bg-bg-card dark:!border-border-primary dark:!hover:bg-bg-card-hover">
@@ -2306,6 +2314,16 @@
                 </a>
                 <?php if(auth()->guard()->check()): ?>
                     <div class="border-t border-gray-200 dark:!border-border-primary mt-2 pt-2">
+                        <?php if(auth()->user()->isAuthor()): ?>
+                            <a href="<?php echo e(route('admin.articles.create')); ?>" class="block px-4 py-3 text-sm text-accent hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors font-bold">
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    <span>POST ARTICLE</span>
+                                </div>
+                            </a>
+                        <?php endif; ?>
                         <a href="<?php echo e(route('user.dashboard')); ?>" class="block px-4 py-3 text-sm text-gray-900 dark:!text-white hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors">
                             <div class="flex items-center gap-3">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -6,9 +6,9 @@
                     <img src="{{ $item->featured_image_url }}" 
                          alt="{{ $item->featured_image_alt ?: $item->title }}" 
                          title="{{ $item->featured_image_title ?: $item->title }}"
-                         onerror="this.parentElement.innerHTML='<div class=\'logo-placeholder\'>NC</div>'">
+                         onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}';">
                 @else
-                    <div class="logo-placeholder">NC</div>
+                    <img src="{{ asset('article_image_notfound.png') }}" alt="{{ $item->title }}">
                 @endif
             </a>
         </div>

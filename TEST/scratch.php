@@ -1,0 +1,1 @@
+<?php $user = App\Models\User::first(); Auth::login($user); $request = Illuminate\Http\Request::create("/articles/1/like", "POST"); $request->headers->set("Accept", "application/json"); $response = app()->handle($request); echo $response->getStatusCode() . " - " . $response->getContent();

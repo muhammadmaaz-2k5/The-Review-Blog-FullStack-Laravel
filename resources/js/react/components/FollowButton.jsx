@@ -14,7 +14,13 @@ export default function FollowButton({
       return;
     }
 
+    if (loading) return;
+
     setLoading(true);
+
+    // Optimistic update
+    const previousState = isFollowing;
+    setIsFollowing(!isFollowing);
 
     try {
       const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -39,9 +45,11 @@ export default function FollowButton({
           followersCountEl.textContent = new Intl.NumberFormat().format(data.followers_count);
         }
       } else {
+        setIsFollowing(previousState);
         console.error('Follow toggle failed:', data.message);
       }
     } catch (error) {
+      setIsFollowing(previousState);
       console.error('Error toggling follow:', error);
     } finally {
       setLoading(false);

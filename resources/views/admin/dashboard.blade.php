@@ -190,7 +190,7 @@
                         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 dark:!bg-bg-card-hover rounded-lg hover:bg-gray-100 dark:!hover:bg-bg-card-hover transition-colors">
                             <div class="w-16 h-16 sm:w-20 sm:h-20 rounded overflow-hidden bg-gray-200 dark:!bg-gray-700 flex-shrink-0">
                                 @if($article->featured_image)
-                                    <img src="{{ $article->featured_image_url }}" alt="{{ $article->title }}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/200x200?text=No+Image'">
+                                    <img src="{{ $article->featured_image_url }}" alt="{{ $article->title }}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}'">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
                                 @endif
@@ -250,9 +250,7 @@
                     <a href="{{ route('admin.media.index') }}" class="block w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white text-center rounded-lg transition-colors font-semibold" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
                         Manage Media / Images
                     </a>
-                    <a href="{{ route('admin.featured-videos.index') }}" class="block w-full px-4 py-3 bg-indigo-500 hover:bg-indigo-600 text-white text-center rounded-lg transition-colors font-semibold" style="font-family: 'Poppins', sans-serif; font-weight: 600;">
-                        Manage Featured Videos
-                    </a>
+                    
                     
                     
                     
@@ -425,7 +423,7 @@
                                     ? $article->featured_image 
                                     : asset('storage/' . $article->featured_image);
                             @endphp
-                            <img src="{{ $imageUrl }}" alt="{{ $article->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'">
+                            <img src="{{ $imageUrl }}" alt="{{ $article->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.onerror=null;this.src='{{ asset('article_image_notfound.png') }}'">
                         @else
                             <div class="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
                         @endif
