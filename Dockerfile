@@ -41,10 +41,5 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Generate SQLite database file if it doesn't exist
-RUN mkdir -p /var/www/html/database && touch /var/www/html/database/database.sqlite \
-    && chown www-data:www-data /var/www/html/database/database.sqlite \
-    && chmod 775 /var/www/html/database/database.sqlite
-
 EXPOSE 9000
 CMD ["php-fpm"]
