@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: laravel-env
+data:
+  APP_NAME: Laravel
+  APP_ENV: local
+  APP_KEY: base64:tQjPjYn0tL7+H4yI0xS+/b7j9z6L4A8T1X/V7iW5+wM= # Replace in prod
+  APP_DEBUG: "true"
+  APP_URL: http://localhost
+  LOG_CHANNEL: stderr
+  DB_CONNECTION: mysql
+  DB_HOST: mysql
+  DB_PORT: "3306"
+  DB_DATABASE: laravel
+  DB_USERNAME: laravel
+  DB_PASSWORD: secret
+  CACHE_STORE: database
+  QUEUE_CONNECTION: sync
+  SESSION_DRIVER: database
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  default.conf: |
+    server {
+        listen 80;
+        index index.php index.html;
+        error_log  /var/log/nginx/error.log;
+        access_log /var/log/nginx/access.log;
+        root /var/www/html/public;
+
+        location ~ \.php$ {
+            try_files $uri =404;
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_index index.php;
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+        }
+
+        location / {
+            try_files $uri $uri/ /index.php?$query_string;
+            gzip_static on;
+        }
+    }
