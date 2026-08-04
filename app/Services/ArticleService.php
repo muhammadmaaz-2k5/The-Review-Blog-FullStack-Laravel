@@ -154,7 +154,7 @@ class ArticleService
     {
         return Cache::remember("popular_tags_{$limit}", 3600, function () use ($limit) {
             return Tag::withCount('articles')
-                ->having('articles_count', '>', 0)
+                ->has('articles')
                 ->orderBy('articles_count', 'desc')
                 ->limit($limit)
                 ->get();
